@@ -54,6 +54,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICircleService, CircleService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
