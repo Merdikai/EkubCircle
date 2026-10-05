@@ -45,3 +45,40 @@ public class CircleDetailDto : CircleDto
     public int TotalRounds { get; set; }
     public int CurrentRoundNumber { get; set; }
 }
+
+public class CircleSummaryDto
+{
+    public int CircleId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public decimal ContributionAmount { get; set; }
+    public string MeetingLabel { get; set; } = string.Empty;
+    public int TotalMembers { get; set; }
+    public int TotalRounds { get; set; }
+    public int CompletedRoundsCount { get; set; }
+    public decimal TotalPotDisbursed { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? StartedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
+    public List<CircleSummaryRoundDto> Rounds { get; set; } = new();
+    public List<CircleSummaryMemberDto> Members { get; set; } = new();
+}
+
+public class CircleSummaryRoundDto
+{
+    public int RoundNumber { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public string ReceiverName { get; set; } = string.Empty;
+    public decimal PotAmount { get; set; }
+    public DateTime? PaidOutAt { get; set; }
+}
+
+public class CircleSummaryMemberDto
+{
+    public int MemberId { get; set; }
+    public string FullName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public int MemberOrder { get; set; }
+    public bool HasReceived { get; set; }
+    public int TotalContributionsPaid { get; set; }
+}

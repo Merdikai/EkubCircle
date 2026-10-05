@@ -47,6 +47,7 @@ public class GetPaymentsQueryHandler : IRequestHandler<GetPaymentsQuery, List<Pa
             PaymentType = p.PaymentType,
             PaymentMethod = p.PaymentMethod,
             Notes = p.Notes,
+            IsLate = p.IsLate,
             PaidAt = p.PaidAt
         }).ToList();
     }

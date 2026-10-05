@@ -12,6 +12,7 @@ public class Payment
     public string PaymentType { get; set; } = Enums.PaymentType.Contribution;
     public string PaymentMethod { get; set; } = "Cash";
     public string? Notes { get; set; }
+    public bool IsLate { get; set; } = false;
     public DateTime PaidAt { get; set; } = DateTime.UtcNow;
     public int RecordedByUserId { get; set; }
 

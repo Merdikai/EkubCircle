@@ -191,4 +191,30 @@ public class CirclesController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Extra Credit: Completed-circle audit summary and metrics report.
+    /// </summary>
+    [HttpGet("{id:int}/summary")]
+    [ProducesResponseType(typeof(CircleSummaryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCircleSummary(int id)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var query = new GetCircleSummaryQuery(id, userId);
+            var summary = await _sender.Send(query);
+            return Ok(summary);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+        }
+    }
 }

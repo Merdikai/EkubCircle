@@ -160,6 +160,45 @@ try {
         Write-Host " [PASS] Server rejected duplicate payout of Round 1 (HTTP 400 Bad Request)" -ForegroundColor Green
     }
 
+    # 13. Test Extra Credit Feature: Server-Side Fair Draw Simulator
+    Write-Host "`n9. Testing Extra Credit: Server-Side Fair Draw Simulator..." -ForegroundColor Yellow
+    $round2 = Invoke-RestMethod -Uri "$BaseUrl/api/rounds/current?circleId=$circleId" -Method Get -Headers $headers
+    $round2Id = $round2.roundId
+    Assert-Equal $round2.roundNumber 2 "Current round is Round 2"
+
+    # Before payment, draw should fail because unpaid members cannot win the draw
+    try {
+        Invoke-RestMethod -Uri "$BaseUrl/api/rounds/$round2Id/draw" -Method Post -Headers $headers
+        Write-Host " [FAIL] Server should reject draw when no eligible members have paid!" -ForegroundColor Red
+        exit 1
+    } catch {
+        Write-Host " [PASS] Server rejected draw when no members have paid (unpaid members cannot win draw)" -ForegroundColor Green
+    }
+
+    # Record Round 2 payment for member 1 & member 2
+    $payR2_1 = @{
+        roundId = $round2Id
+        memberId = $member1.memberId
+        amount = 2500
+        paymentMethod = "Telebirr"
+        isLate = $false
+    } | ConvertTo-Json
+    Invoke-RestMethod -Uri "$BaseUrl/api/payments" -Method Post -Headers $headers -Body $payR2_1 -ContentType "application/json" | Out-Null
+
+    $drawRes = Invoke-RestMethod -Uri "$BaseUrl/api/rounds/$round2Id/draw" -Method Post -Headers $headers
+    Assert-Equal ($drawRes.winnerMemberId -ne 0) $true "Server drew a fair winner from eligible paid members"
+    Write-Host " [PASS] Winner selected: $($drawRes.winnerName) ($($drawRes.eligibleCandidatesCount) candidate pool)" -ForegroundColor Green
+
+    # 14. Test Extra Credit Feature: Completed-Circle Summary & Audit Report
+    Write-Host "`n10. Testing Extra Credit: Completed-Circle Summary & Audit Report..." -ForegroundColor Yellow
+    $summary = Invoke-RestMethod -Uri "$BaseUrl/api/circles/$circleId/summary" -Method Get -Headers $headers
+    Assert-Equal $summary.circleId $circleId "Audit report fetched for circle"
+    Assert-Equal $summary.totalMembers 3 "Total members matches 3"
+    Assert-Equal $summary.totalRounds 3 "Total rounds matches 3"
+    Assert-Equal ($summary.rounds.Count -gt 0) $true "Rounds audit trail present"
+    Assert-Equal ($summary.members.Count -gt 0) $true "Members performance audit trail present"
+    Write-Host " [PASS] Completed-circle audit report verified with $($summary.rounds.Count) rounds and $($summary.members.Count) members" -ForegroundColor Green
+
     Write-Host "`n==========================================================" -ForegroundColor Green
     Write-Host " ALL TESTS PASSED! FULL SERVER-SIDE ENFORCEMENT VERIFIED! " -ForegroundColor Green
     Write-Host "==========================================================" -ForegroundColor Green

@@ -7,6 +7,7 @@ public class RecordPaymentRequestDto
     public decimal Amount { get; set; }
     public string PaymentMethod { get; set; } = "Cash";
     public string? Notes { get; set; }
+    public bool IsLate { get; set; } = false;
 }
 
 public class PaymentDto
@@ -20,5 +21,6 @@ public class PaymentDto
     public string PaymentType { get; set; } = string.Empty;
     public string PaymentMethod { get; set; } = string.Empty;
     public string? Notes { get; set; }
+    public bool IsLate { get; set; }
     public DateTime PaidAt { get; set; }
 }

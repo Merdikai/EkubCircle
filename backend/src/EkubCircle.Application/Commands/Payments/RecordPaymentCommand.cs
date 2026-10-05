@@ -9,5 +9,6 @@ public record RecordPaymentCommand(
     int MemberId,
     decimal Amount,
     string PaymentMethod = "Cash",
-    string? Notes = null
+    string? Notes = null,
+    bool IsLate = false
 ) : IRequest<PaymentDto>;

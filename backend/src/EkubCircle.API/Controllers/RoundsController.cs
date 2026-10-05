@@ -128,4 +128,35 @@ public class RoundsController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Extra Credit: Server-side cryptographically fair draw for winner among eligible unpaid recipients.
+    /// </summary>
+    [HttpPost("{roundId:int}/draw")]
+    [ProducesResponseType(typeof(DrawWinnerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DrawWinner(int roundId)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var command = new DrawRoundWinnerCommand(roundId, userId);
+            var result = await _sender.Send(command);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

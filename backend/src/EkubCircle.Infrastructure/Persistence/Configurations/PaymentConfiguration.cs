@@ -14,6 +14,7 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.PaymentType).IsRequired().HasMaxLength(50);
         builder.Property(p => p.PaymentMethod).IsRequired().HasMaxLength(50);
         builder.Property(p => p.Notes).HasMaxLength(500);
+        builder.Property(p => p.IsLate).HasDefaultValue(false);
 
         builder.HasOne(p => p.Round)
             .WithMany(r => r.Payments)

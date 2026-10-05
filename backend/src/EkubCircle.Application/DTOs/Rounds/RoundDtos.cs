@@ -13,6 +13,7 @@ public class CurrentRoundMemberDto
     public DateTime? PaidAt { get; set; }
     public string? PaymentMethod { get; set; }
     public string? Notes { get; set; }
+    public bool IsLate { get; set; }
 }
 
 public class CurrentRoundDto
@@ -61,4 +62,16 @@ public class RoundSummaryDto
     public DateTime? PaidOutAt { get; set; }
     public int PaidCount { get; set; }
     public int TotalMembers { get; set; }
+}
+
+public class DrawWinnerDto
+{
+    public int RoundId { get; set; }
+    public int RoundNumber { get; set; }
+    public int WinnerMemberId { get; set; }
+    public string WinnerName { get; set; } = string.Empty;
+    public string WinnerEmail { get; set; } = string.Empty;
+    public int EligibleCandidatesCount { get; set; }
+    public DateTime DrawnAt { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

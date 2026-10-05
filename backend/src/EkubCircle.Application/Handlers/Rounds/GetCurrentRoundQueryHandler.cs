@@ -77,7 +77,8 @@ public class GetCurrentRoundQueryHandler : IRequestHandler<GetCurrentRoundQuery,
                     AmountPaid = payment?.Amount,
                     PaidAt = payment?.PaidAt,
                     PaymentMethod = payment?.PaymentMethod,
-                    Notes = payment?.Notes
+                    Notes = payment?.Notes,
+                    IsLate = payment?.IsLate ?? false
                 };
             }).ToList();
 

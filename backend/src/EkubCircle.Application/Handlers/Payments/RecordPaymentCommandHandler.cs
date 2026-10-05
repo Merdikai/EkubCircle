@@ -74,6 +74,7 @@ public class RecordPaymentCommandHandler : IRequestHandler<RecordPaymentCommand,
             PaymentType = PaymentType.Contribution,
             PaymentMethod = string.IsNullOrWhiteSpace(request.PaymentMethod) ? "Cash" : request.PaymentMethod.Trim(),
             Notes = request.Notes?.Trim(),
+            IsLate = request.IsLate,
             PaidAt = DateTime.UtcNow,
             RecordedByUserId = request.RecordedByUserId
         };
@@ -94,6 +95,7 @@ public class RecordPaymentCommandHandler : IRequestHandler<RecordPaymentCommand,
             PaymentType = payment.PaymentType,
             PaymentMethod = payment.PaymentMethod,
             Notes = payment.Notes,
+            IsLate = payment.IsLate,
             PaidAt = payment.PaidAt
         };
     }

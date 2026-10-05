@@ -30,6 +30,8 @@ public static class PaymentType
 
 public static class UserRole
 {
+    public const string Member = "Member";
+    public const string Organizer = "Organizer";
     public const string Admin = "Admin";
     public const string User = "User";
 }
