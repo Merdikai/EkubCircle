@@ -1,0 +1,6 @@
+@EkubCircle.API_HostAddress = http://localhost:5189
+
+GET {{EkubCircle.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
