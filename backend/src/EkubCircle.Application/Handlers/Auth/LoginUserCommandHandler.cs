@@ -45,6 +45,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, AuthRes
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
+                PhoneNumber = user.Phone,
                 Role = user.Role,
                 CreatedAt = user.CreatedAt
             }

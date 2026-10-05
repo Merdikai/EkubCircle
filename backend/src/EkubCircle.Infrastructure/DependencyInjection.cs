@@ -11,9 +11,22 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection") 
-            ?? configuration.GetConnectionString("PostgresConnection") 
-            ?? "Data Source=ekubcircle.db";
+        var postgresConn = configuration.GetConnectionString("PostgresConnection");
+        var defaultConn = configuration.GetConnectionString("DefaultConnection");
+
+        string connectionString;
+        if (!string.IsNullOrWhiteSpace(postgresConn) && !postgresConn.Contains("your_password_here", StringComparison.OrdinalIgnoreCase))
+        {
+            connectionString = postgresConn;
+        }
+        else if (!string.IsNullOrWhiteSpace(defaultConn))
+        {
+            connectionString = defaultConn;
+        }
+        else
+        {
+            connectionString = "Data Source=ekubcircle.db";
+        }
 
         services.AddDbContext<EkubDbContext>(options =>
         {

@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { User, AuthSession, LoginRequest } from '../models';
+import { User, UserRole, AuthSession, LoginRequest } from '../models';
 
 const STORAGE_KEY = 'ekub_auth_session';
 
@@ -12,27 +12,27 @@ export const DEMO_USERS: User[] = [
     fullName: 'Abebe Bikila',
     email: 'organizer@ekub.local',
     role: 'Organizer',
-    phoneNumber: '+251 911 234 567',
+    phoneNumber: '+251 911 111 111',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     walletBalance: 12500,
     createdAt: '2026-01-01T08:00:00Z'
   },
   {
     id: 2,
-    fullName: 'Hana Gebre',
+    fullName: 'Hana Girma',
     email: 'member1@ekub.local',
     role: 'Member',
-    phoneNumber: '+251 922 345 678',
+    phoneNumber: '+251 911 222 222',
     avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
     walletBalance: 4500,
     createdAt: '2026-01-01T09:30:00Z'
   },
   {
     id: 3,
-    fullName: 'Dawit Alemu',
+    fullName: 'Dawit Tadesse',
     email: 'member2@ekub.local',
     role: 'Member',
-    phoneNumber: '+251 933 456 789',
+    phoneNumber: '+251 911 333 333',
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     walletBalance: 5000,
     createdAt: '2026-01-01T11:00:00Z'
@@ -42,7 +42,7 @@ export const DEMO_USERS: User[] = [
     fullName: 'Hackathon Admin',
     email: 'admin@hackathon.local',
     role: 'Admin',
-    phoneNumber: '+251 999 000 111',
+    phoneNumber: '+251 911 000 000',
     avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
     walletBalance: 99999,
     createdAt: '2026-01-01T00:00:00Z'
@@ -62,20 +62,41 @@ export class AuthService {
   readonly currentUser = computed(() => this.sessionSignal()?.user ?? null);
   readonly isAuthenticated = computed(() => !!this.sessionSignal());
   readonly isOrganizer = computed(() => {
-    const role = this.currentUser()?.role;
-    return role === 'Organizer' || role === 'Admin';
+    const role = this.currentUser()?.role?.toLowerCase();
+    return role === 'organizer' || role === 'admin';
+  });
+  readonly isAdmin = computed(() => {
+    const role = this.currentUser()?.role?.toLowerCase();
+    return role === 'admin';
+  });
+  readonly isMember = computed(() => {
+    const role = this.currentUser()?.role?.toLowerCase();
+    return role === 'member';
   });
 
+  normalizeRole(role?: string): UserRole {
+    if (!role) return 'Member';
+    const r = role.trim().toLowerCase();
+    if (r === 'admin' || r === 'administrator') return 'Admin';
+    if (r === 'organizer' || r === 'organizers') return 'Organizer';
+    return 'Member';
+  }
+
   constructor() {
-    // If no session exists, default to organizer for immediate live presentation
-    if (!this.sessionSignal()) {
-      this.loginWithDemoUser(DEMO_USERS[0]);
+    // If a session was stored, ensure its role is properly normalized
+    const current = this.sessionSignal();
+    if (current?.user) {
+      current.user.role = this.normalizeRole(current.user.role);
+      this.sessionSignal.set({ ...current });
     }
   }
 
   loginApi(credentials: LoginRequest): Observable<AuthSession> {
     return this.http.post<AuthSession>('/api/auth/login', credentials).pipe(
       tap(session => {
+        if (session?.user) {
+          session.user.role = this.normalizeRole(session.user.role);
+        }
         this.sessionSignal.set(session);
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -84,9 +105,12 @@ export class AuthService {
     );
   }
 
-  registerApi(data: { fullName: string; email: string; password: string; role: string }): Observable<AuthSession> {
+  registerApi(data: { fullName: string; email: string; password: string; role: string; phoneNumber?: string }): Observable<AuthSession> {
     return this.http.post<AuthSession>('/api/auth/register', data).pipe(
       tap(session => {
+        if (session?.user) {
+          session.user.role = this.normalizeRole(session.user.role);
+        }
         this.sessionSignal.set(session);
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -104,8 +128,13 @@ export class AuthService {
   }
 
   loginWithDemoUser(user: User): boolean {
+    const normalizedUser: User = {
+      ...user,
+      role: this.normalizeRole(user.role)
+    };
+
     const session: AuthSession = {
-      user,
+      user: normalizedUser,
       token: `demo-jwt-token-ekub-${user.id}-${Date.now()}`,
       expiresAt: new Date(Date.now() + 86400000).toISOString()
     };

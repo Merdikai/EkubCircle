@@ -58,4 +58,15 @@ public static class UserRole
     public const string Organizer = "Organizer";
     public const string Admin = "Admin";
     public const string User = "User";
+
+    public static string NormalizeRole(string? role)
+    {
+        if (string.IsNullOrWhiteSpace(role)) return Member;
+        var r = role.Trim().ToLowerInvariant();
+        if (r is "admin" or "administrator") return Admin;
+        if (r is "organizer" or "organizers") return Organizer;
+        if (r is "member" or "members" or "user" or "users") return Member;
+        return Member;
+    }
 }
+

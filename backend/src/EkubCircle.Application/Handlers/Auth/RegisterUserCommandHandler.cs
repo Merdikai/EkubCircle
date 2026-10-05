@@ -40,8 +40,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, A
         {
             FullName = request.FullName.Trim(),
             Email = normalizedEmail,
+            Phone = request.PhoneNumber?.Trim(),
             PasswordHash = _passwordHasher.HashPassword(request.Password),
-            Role = string.Equals(request.Role, UserRole.Admin, StringComparison.OrdinalIgnoreCase) ? UserRole.Admin : UserRole.User,
+            Role = UserRole.NormalizeRole(request.Role),
             CreatedAt = DateTime.UtcNow
         };
 
@@ -59,6 +60,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, A
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
+                PhoneNumber = user.Phone,
                 Role = user.Role,
                 CreatedAt = user.CreatedAt
             }

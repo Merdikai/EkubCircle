@@ -9,7 +9,14 @@ public static class DbInitializer
 {
     public static async Task SeedAsync(EkubDbContext context)
     {
-        await context.Database.MigrateAsync();
+        if (context.Database.IsNpgsql())
+        {
+            await context.Database.EnsureCreatedAsync();
+        }
+        else
+        {
+            await context.Database.MigrateAsync();
+        }
 
         if (await context.Users.AnyAsync())
         {
@@ -26,7 +33,7 @@ public static class DbInitializer
             Email = "admin@hackathon.local",
             Phone = "+251911000000",
             PasswordHash = adminPasswordHash,
-            Role = "Admin",
+            Role = UserRole.Admin,
             CreatedAt = DateTime.UtcNow.AddDays(-30)
         };
 
@@ -36,7 +43,7 @@ public static class DbInitializer
             Email = "organizer@ekub.local",
             Phone = "+251911111111",
             PasswordHash = userPasswordHash,
-            Role = "User",
+            Role = UserRole.Organizer,
             CreatedAt = DateTime.UtcNow.AddDays(-20)
         };
 
@@ -46,7 +53,7 @@ public static class DbInitializer
             Email = "member1@ekub.local",
             Phone = "+251911222222",
             PasswordHash = userPasswordHash,
-            Role = "User",
+            Role = UserRole.Member,
             CreatedAt = DateTime.UtcNow.AddDays(-19)
         };
 
@@ -56,7 +63,7 @@ public static class DbInitializer
             Email = "member2@ekub.local",
             Phone = "+251911333333",
             PasswordHash = userPasswordHash,
-            Role = "User",
+            Role = UserRole.Member,
             CreatedAt = DateTime.UtcNow.AddDays(-18)
         };
 
@@ -66,7 +73,7 @@ public static class DbInitializer
             Email = "member3@ekub.local",
             Phone = "+251911444444",
             PasswordHash = userPasswordHash,
-            Role = "User",
+            Role = UserRole.Member,
             CreatedAt = DateTime.UtcNow.AddDays(-17)
         };
 
@@ -76,7 +83,7 @@ public static class DbInitializer
             Email = "member4@ekub.local",
             Phone = "+251911555555",
             PasswordHash = userPasswordHash,
-            Role = "User",
+            Role = UserRole.Member,
             CreatedAt = DateTime.UtcNow.AddDays(-16)
         };
 

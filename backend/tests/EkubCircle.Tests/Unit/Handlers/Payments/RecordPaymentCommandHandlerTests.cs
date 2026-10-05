@@ -91,7 +91,7 @@ public class RecordPaymentCommandHandlerTests
         result.PaymentType.Should().Be(PaymentType.Contribution);
         result.MemberId.Should().Be(10);
 
-        var savedPayment = context.Payments.FirstOrDefault(p => p.RoundId == 102 && p.MemberId == 10);
+        var savedPayment = context.Payments.FirstOrDefault(p => p.RoundId == 102 && p.CircleMemberId == 10);
         savedPayment.Should().NotBeNull();
     }
 

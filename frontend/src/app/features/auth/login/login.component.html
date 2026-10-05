@@ -6,8 +6,28 @@
         <div class="brand-rosette-wrap">
           <img src="assets/images/ekub-rosette.svg" alt="Ekub Rosette" class="brand-rosette" />
         </div>
-        <h2 class="brand-name">Ekub</h2>
-        <p class="brand-tagline">Save Together, Build Tomorrow</p>
+        <h2 class="brand-name">EkubCircle</h2>
+        <p class="brand-tagline">Save Together, Build Tomorrow (ዕቁብ)</p>
+      </div>
+
+      <!-- Mode Selector Tabs -->
+      <div class="auth-tabs">
+        <button
+          type="button"
+          class="auth-tab"
+          [class.active]="authMode() === 'login'"
+          (click)="setMode('login')"
+        >
+          Sign In
+        </button>
+        <button
+          type="button"
+          class="auth-tab"
+          [class.active]="authMode() === 'register'"
+          (click)="setMode('register')"
+        >
+          Create Account
+        </button>
       </div>
 
       <div class="login-divider"></div>
@@ -23,92 +43,221 @@
         </div>
       }
 
-      <!-- Login Form -->
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-        <!-- Email Field -->
-        <div class="form-group">
-          <label for="email" class="form-label">Email Address</label>
-          <div class="input-wrap" [class.has-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-            <span class="input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </span>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              placeholder="e.g. amanuel@ekub.et"
-              class="form-control"
-            />
-          </div>
-          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-            <span class="field-error">Please enter a valid email address.</span>
-          }
+      @if (successMessage()) {
+        <div class="success-banner">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <span>{{ successMessage() }}</span>
         </div>
+      }
 
-        <!-- Password Field with Show/Hide toggle -->
-        <div class="form-group">
-          <label for="password" class="form-label">Password</label>
-          <div class="input-wrap" [class.has-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            <span class="input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-            </span>
-            <input
-              id="password"
-              [type]="showPassword() ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="••••••••"
-              class="form-control"
-            />
-            <button
-              type="button"
-              class="toggle-pass-btn"
-              (click)="togglePasswordVisibility()"
-              aria-label="Toggle password visibility"
-            >
-              @if (showPassword()) {
+      <!-- SIGN IN FORM -->
+      @if (authMode() === 'login') {
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <div class="input-wrap" [class.has-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+              <span class="input-icon">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
                 </svg>
-              } @else {
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              }
-            </button>
+              </span>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="e.g. organizer@ekub.local"
+                class="form-control"
+              />
+            </div>
+            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+              <span class="field-error">Please enter a valid email address.</span>
+            }
           </div>
-          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-            <span class="field-error">Password must be at least 6 characters.</span>
-          }
-        </div>
 
-        <button type="submit" class="btn btn-primary btn-submit" [disabled]="isLoading()">
-          @if (isLoading()) {
-            <span class="spinner"></span>
-            Signing in...
-          } @else {
-            Sign In to Ekub
-          }
-        </button>
-      </form>
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-wrap" [class.has-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </span>
+              <input
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="••••••••"
+                class="form-control"
+              />
+              <button
+                type="button"
+                class="toggle-pass-btn"
+                (click)="togglePasswordVisibility()"
+                aria-label="Toggle password visibility"
+              >
+                @if (showPassword()) {
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                }
+              </button>
+            </div>
+            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+              <span class="field-error">Password must be at least 6 characters.</span>
+            }
+          </div>
 
-      <!-- Hackathon Persona Quick-Switcher (Commit 20 Feature) -->
+          <button type="submit" class="btn btn-primary btn-submit" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <span class="spinner"></span>
+              Signing in...
+            } @else {
+              Sign In to EkubCircle
+            }
+          </button>
+        </form>
+      }
+
+      <!-- REGISTER FORM -->
+      @if (authMode() === 'register') {
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="login-form">
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="reg-name" class="form-label">Full Name</label>
+            <div class="input-wrap" [class.has-error]="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <input
+                id="reg-name"
+                type="text"
+                formControlName="fullName"
+                placeholder="e.g. Solomon Desta"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="reg-email" class="form-label">Email Address</label>
+            <div class="input-wrap" [class.has-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
+              <input
+                id="reg-email"
+                type="email"
+                formControlName="email"
+                placeholder="e.g. solomon@ekub.local"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-group">
+            <label for="reg-phone" class="form-label">Phone Number</label>
+            <div class="input-wrap" [class.has-error]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </span>
+              <input
+                id="reg-phone"
+                type="tel"
+                formControlName="phoneNumber"
+                placeholder="+251911445566"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="reg-pass" class="form-label">Password</label>
+            <div class="input-wrap" [class.has-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </span>
+              <input
+                id="reg-pass"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Minimum 6 characters"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <!-- Role Selection (Member / Organizer / Admin) -->
+          <div class="form-group">
+            <label class="form-label">Select System Role</label>
+            <div class="role-selector-row">
+              <label class="role-option" [class.selected]="registerForm.get('role')?.value === 'Member'">
+                <input type="radio" formControlName="role" value="Member" class="role-radio" />
+                <span class="role-title">Member</span>
+                <span class="role-desc">Save & Payout</span>
+              </label>
+
+              <label class="role-option" [class.selected]="registerForm.get('role')?.value === 'Organizer'">
+                <input type="radio" formControlName="role" value="Organizer" class="role-radio" />
+                <span class="role-title">Organizer</span>
+                <span class="role-desc">Create & Manage</span>
+              </label>
+
+              <label class="role-option" [class.selected]="registerForm.get('role')?.value === 'Admin'">
+                <input type="radio" formControlName="role" value="Admin" class="role-radio" />
+                <span class="role-title">Admin</span>
+                <span class="role-desc">Full Oversight</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-submit" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <span class="spinner"></span>
+              Creating Account...
+            } @else {
+              Register & Start Saving
+            }
+          </button>
+        </form>
+      }
+
+      <!-- Hackathon Personas Quick-Switcher (4 Personas) -->
       <div class="demo-selector-section">
-        <p class="demo-title">⚡ Quick Sign-In as Demo Persona</p>
+        <p class="demo-title">⚡ Quick Sign-In as Seeded Database Persona</p>
         <div class="demo-cards-row">
-          @for (u of demoUsers.slice(0, 2); track u.id) {
+          @for (u of demoUsers; track u.id) {
             <button type="button" class="demo-pill" (click)="selectDemoUser(u)">
               <img [src]="u.avatarUrl" [alt]="u.fullName" class="demo-avatar" />
               <div class="demo-meta">
                 <span class="demo-name">{{ u.fullName }}</span>
-                <span class="demo-role" [class.organizer]="u.role === 'Organizer'">{{ u.role }}</span>
+                <span class="demo-role" [class.organizer]="u.role === 'Organizer'" [class.admin]="u.role === 'Admin'">{{ u.role }}</span>
               </div>
             </button>
           }
@@ -117,3 +266,4 @@
     </div>
   </div>
 </div>
+

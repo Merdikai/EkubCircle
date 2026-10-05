@@ -3,4 +3,5 @@ using EkubCircle.Application.DTOs.Auth;
 
 namespace EkubCircle.Application.Commands.Auth;
 
-public record RegisterUserCommand(string FullName, string Email, string Password, string Role = "User") : IRequest<AuthResponseDto>;
+public record RegisterUserCommand(string FullName, string Email, string Password, string Role = "Member", string? PhoneNumber = null) : IRequest<AuthResponseDto>;
+
