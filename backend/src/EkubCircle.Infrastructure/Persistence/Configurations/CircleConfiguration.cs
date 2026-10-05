@@ -11,8 +11,13 @@ public class CircleConfiguration : IEntityTypeConfiguration<Circle>
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Name).IsRequired().HasMaxLength(200);
         builder.Property(c => c.ContributionAmount).HasPrecision(18, 2);
-        builder.Property(c => c.MeetingLabel).IsRequired().HasMaxLength(50);
+        builder.Property(c => c.Frequency).IsRequired().HasMaxLength(50);
+        builder.Property(c => c.MaxMembers).HasDefaultValue(10);
         builder.Property(c => c.Status).IsRequired().HasMaxLength(50);
+        builder.Property(c => c.StartDate);
+
+        builder.Ignore(c => c.MeetingLabel);
+        builder.Ignore(c => c.StartedAt);
 
         builder.HasOne(c => c.CreatedByUser)
             .WithMany(u => u.CreatedCircles)

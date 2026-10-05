@@ -24,7 +24,7 @@ public class GetCurrentRoundQueryHandler : IRequestHandler<GetCurrentRoundQuery,
             .Include(c => c.Rounds)
                 .ThenInclude(r => r.Payments)
             .Include(c => c.Rounds)
-                .ThenInclude(r => r.ReceiverMember)
+                .ThenInclude(r => r.WinnerMember)
                     .ThenInclude(rm => rm!.User)
             .FirstOrDefaultAsync(c => c.Id == request.CircleId, cancellationToken);
 
@@ -58,7 +58,7 @@ public class GetCurrentRoundQueryHandler : IRequestHandler<GetCurrentRoundQuery,
         var currentPot = normalPayments.Sum(p => p.Amount);
         var targetPot = totalMembers * circle.ContributionAmount;
 
-        var receiver = activeRound.ReceiverMember;
+        var receiver = activeRound.WinnerMember;
 
         var memberDtos = circle.Members
             .OrderBy(m => m.MemberOrder)

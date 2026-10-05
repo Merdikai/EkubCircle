@@ -10,6 +10,8 @@ public interface IEkubDbContext
     DbSet<CircleMember> CircleMembers { get; }
     DbSet<Round> Rounds { get; }
     DbSet<Payment> Payments { get; }
+    DbSet<JoinRequest> JoinRequests { get; }
+    DbSet<Notification> Notifications { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

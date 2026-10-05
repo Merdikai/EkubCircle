@@ -26,7 +26,7 @@ public class ExecutePayoutCommandHandler : IRequestHandler<ExecutePayoutCommand,
             .Include(r => r.Circle)
                 .ThenInclude(c => c!.Rounds)
             .Include(r => r.Payments)
-            .Include(r => r.ReceiverMember)
+            .Include(r => r.WinnerMember)
                 .ThenInclude(rm => rm!.User)
             .FirstOrDefaultAsync(r => r.Id == request.RoundId, cancellationToken);
 
@@ -46,9 +46,9 @@ public class ExecutePayoutCommandHandler : IRequestHandler<ExecutePayoutCommand,
             }
         }
 
-        if (round.Status != RoundStatus.Open)
+        if (round.Status != RoundStatus.Open && round.Status != RoundStatus.Drawn)
         {
-            throw new InvalidOperationException($"Cannot execute payout for round with status '{round.Status}'. Only open rounds can be paid out.");
+            throw new InvalidOperationException($"Cannot execute payout for round with status '{round.Status}'. Only open or drawn rounds can be paid out.");
         }
 
         // Rule 1: 100% Contribution Gate
@@ -61,7 +61,7 @@ public class ExecutePayoutCommandHandler : IRequestHandler<ExecutePayoutCommand,
         }
 
         // Rule 2: Single Pot Receipt
-        var receiver = round.ReceiverMember;
+        var receiver = round.WinnerMember;
         if (receiver == null)
         {
             throw new InvalidOperationException("No assigned recipient found for this round.");

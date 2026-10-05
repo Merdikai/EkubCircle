@@ -22,7 +22,7 @@ public class GetCircleSummaryQueryHandler : IRequestHandler<GetCircleSummaryQuer
             .Include(c => c.Members)
                 .ThenInclude(m => m.User)
             .Include(c => c.Rounds)
-                .ThenInclude(r => r.ReceiverMember)
+                .ThenInclude(r => r.WinnerMember)
                     .ThenInclude(rm => rm!.User)
             .Include(c => c.Rounds)
                 .ThenInclude(r => r.Payments)
@@ -48,7 +48,7 @@ public class GetCircleSummaryQueryHandler : IRequestHandler<GetCircleSummaryQuer
             {
                 RoundNumber = r.RoundNumber,
                 Status = r.Status,
-                ReceiverName = r.ReceiverMember?.User?.FullName ?? string.Empty,
+                ReceiverName = r.WinnerMember?.User?.FullName ?? string.Empty,
                 PotAmount = r.PotAmount,
                 PaidOutAt = r.PaidOutAt
             }).ToList();

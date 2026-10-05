@@ -23,7 +23,7 @@ public class GetCircleRoundsQueryHandler : IRequestHandler<GetCircleRoundsQuery,
             .Include(c => c.Rounds)
                 .ThenInclude(r => r.Payments)
             .Include(c => c.Rounds)
-                .ThenInclude(r => r.ReceiverMember)
+                .ThenInclude(r => r.WinnerMember)
                     .ThenInclude(rm => rm!.User)
             .FirstOrDefaultAsync(c => c.Id == request.CircleId, cancellationToken);
 
@@ -47,8 +47,8 @@ public class GetCircleRoundsQueryHandler : IRequestHandler<GetCircleRoundsQuery,
                 RoundId = r.Id,
                 RoundNumber = r.RoundNumber,
                 Status = r.Status,
-                ReceiverMemberId = r.ReceiverMemberId,
-                ReceiverName = r.ReceiverMember?.User?.FullName ?? string.Empty,
+                ReceiverMemberId = r.WinnerMemberId ?? 0,
+                ReceiverName = r.WinnerMember != null && r.WinnerMember.User != null ? r.WinnerMember.User.FullName : string.Empty,
                 PotAmount = r.PotAmount,
                 PaidOutAt = r.PaidOutAt,
                 PaidCount = r.Payments.Count(p => p.PaymentType == PaymentType.Contribution),

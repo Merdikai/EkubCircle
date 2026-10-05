@@ -12,6 +12,8 @@ public class CircleMemberConfiguration : IEntityTypeConfiguration<CircleMember>
         builder.HasIndex(cm => new { cm.CircleId, cm.UserId }).IsUnique();
         builder.Property(cm => cm.RoleInCircle).IsRequired().HasMaxLength(50);
 
+        builder.Ignore(cm => cm.HasWon);
+
         builder.HasOne(cm => cm.Circle)
             .WithMany(c => c.Members)
             .HasForeignKey(cm => cm.CircleId)

@@ -199,8 +199,64 @@ try {
     Assert-Equal ($summary.members.Count -gt 0) $true "Members performance audit trail present"
     Write-Host " [PASS] Completed-circle audit report verified with $($summary.rounds.Count) rounds and $($summary.members.Count) members" -ForegroundColor Green
 
+    # 15. Test ER Extensions: Join Requests & Circle Invitations
+    Write-Host "`n11. Testing Extensions: Join Requests & Circle Invitations..." -ForegroundColor Yellow
+    # Create a new forming circle for join request testing
+    $reqCircleBody = @{
+        name = "Addis Community Savings"
+        contributionAmount = 1500
+        meetingLabel = "Monthly"
+    } | ConvertTo-Json
+    $joinCircle = Invoke-RestMethod -Uri "$BaseUrl/api/circles" -Method Post -Headers $headers -Body $reqCircleBody -ContentType "application/json"
+    $joinCircleId = $joinCircle.id
+
+    # Member 3 logs in
+    $m3LoginBody = @{
+        email = "member3@ekub.local"
+        password = "Ekub123!"
+    } | ConvertTo-Json
+    $m3Auth = Invoke-RestMethod -Uri "$BaseUrl/api/auth/login" -Method Post -Body $m3LoginBody -ContentType "application/json"
+    $m3Headers = @{ Authorization = "Bearer $($m3Auth.token)" }
+
+    # Member 3 submits join request
+    $joinReqBody = @{
+        circleId = $joinCircleId
+        message = "I would love to participate in Addis Community Savings!"
+    } | ConvertTo-Json
+    $newJoinReq = Invoke-RestMethod -Uri "$BaseUrl/api/join-requests" -Method Post -Headers $m3Headers -Body $joinReqBody -ContentType "application/json"
+    Assert-Equal $newJoinReq.status "Pending" "Join request created with 'Pending' status"
+    Assert-Equal $newJoinReq.circleId $joinCircleId "Join request references correct circle"
+
+    # Organizer fetches join requests
+    $circleReqs = Invoke-RestMethod -Uri "$BaseUrl/api/join-requests/circle/$joinCircleId" -Method Get -Headers $headers
+    Assert-Equal ($circleReqs.Count -ge 1) $true "Organizer can query circle join requests"
+
+    # Organizer accepts join request
+    $respondBody = @{
+        status = "Accepted"
+    } | ConvertTo-Json
+    $acceptedReq = Invoke-RestMethod -Uri "$BaseUrl/api/join-requests/$($newJoinReq.id)/respond" -Method Put -Headers $headers -Body $respondBody -ContentType "application/json"
+    Assert-Equal $acceptedReq.status "Accepted" "Organizer accepted join request"
+
+    # Verify Member 3 is now a member of the circle
+    $updatedJoinCircle = Invoke-RestMethod -Uri "$BaseUrl/api/circles/$joinCircleId" -Method Get -Headers $headers
+    $m3MemberFound = $updatedJoinCircle.members | Where-Object { $_.email -eq "member3@ekub.local" }
+    Assert-Equal ($m3MemberFound -ne $null) $true "Member 3 successfully added to circle roster upon acceptance"
+
+    # 16. Test ER Extensions: In-App Notifications
+    Write-Host "`n12. Testing Extensions: In-App Notifications..." -ForegroundColor Yellow
+    $m3Notifications = Invoke-RestMethod -Uri "$BaseUrl/api/notifications" -Method Get -Headers $m3Headers
+    Assert-Equal ($m3Notifications.Count -ge 1) $true "Member 3 received notifications"
+    $acceptedNotif = $m3Notifications | Where-Object { $_.type -eq "JoinRequestAccepted" }
+    Assert-Equal ($acceptedNotif -ne $null) $true "Notification of type 'JoinRequestAccepted' received by user"
+    Assert-Equal $acceptedNotif.isRead $false "Notification is unread initially"
+
+    # Mark notification as read
+    $markReadRes = Invoke-RestMethod -Uri "$BaseUrl/api/notifications/$($acceptedNotif.id)/read" -Method Put -Headers $m3Headers
+    Assert-Equal $markReadRes.success $true "Notification marked as read successfully"
+
     Write-Host "`n==========================================================" -ForegroundColor Green
-    Write-Host " ALL TESTS PASSED! FULL SERVER-SIDE ENFORCEMENT VERIFIED! " -ForegroundColor Green
+    Write-Host " ALL 12 TEST SUITES PASSED! COMPLETE ER & SERVER ENFORCEMENT! " -ForegroundColor Green
     Write-Host "==========================================================" -ForegroundColor Green
 } catch {
     Write-Host " [ERROR] $_" -ForegroundColor Red

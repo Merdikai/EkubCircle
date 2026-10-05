@@ -15,6 +15,8 @@ public class EkubDbContext : DbContext, IEkubDbContext
     public DbSet<CircleMember> CircleMembers => Set<CircleMember>();
     public DbSet<Round> Rounds => Set<Round>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<JoinRequest> JoinRequests => Set<JoinRequest>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

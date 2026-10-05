@@ -24,6 +24,7 @@ public static class DbInitializer
         {
             FullName = "Hackathon Admin",
             Email = "admin@hackathon.local",
+            Phone = "+251911000000",
             PasswordHash = adminPasswordHash,
             Role = "Admin",
             CreatedAt = DateTime.UtcNow.AddDays(-30)
@@ -33,6 +34,7 @@ public static class DbInitializer
         {
             FullName = "Abebe Bikila",
             Email = "organizer@ekub.local",
+            Phone = "+251911111111",
             PasswordHash = userPasswordHash,
             Role = "User",
             CreatedAt = DateTime.UtcNow.AddDays(-20)
@@ -42,6 +44,7 @@ public static class DbInitializer
         {
             FullName = "Hana Girma",
             Email = "member1@ekub.local",
+            Phone = "+251911222222",
             PasswordHash = userPasswordHash,
             Role = "User",
             CreatedAt = DateTime.UtcNow.AddDays(-19)
@@ -51,6 +54,7 @@ public static class DbInitializer
         {
             FullName = "Dawit Tadesse",
             Email = "member2@ekub.local",
+            Phone = "+251911333333",
             PasswordHash = userPasswordHash,
             Role = "User",
             CreatedAt = DateTime.UtcNow.AddDays(-18)
@@ -60,6 +64,7 @@ public static class DbInitializer
         {
             FullName = "Meron Bekele",
             Email = "member3@ekub.local",
+            Phone = "+251911444444",
             PasswordHash = userPasswordHash,
             Role = "User",
             CreatedAt = DateTime.UtcNow.AddDays(-17)
@@ -69,6 +74,7 @@ public static class DbInitializer
         {
             FullName = "Selam Fikre",
             Email = "member4@ekub.local",
+            Phone = "+251911555555",
             PasswordHash = userPasswordHash,
             Role = "User",
             CreatedAt = DateTime.UtcNow.AddDays(-16)
@@ -82,19 +88,21 @@ public static class DbInitializer
         {
             Name = "Bole Tech Savings Circle",
             ContributionAmount = 1000m,
-            MeetingLabel = "Weekly",
+            Frequency = CircleFrequency.Weekly,
+            MaxMembers = 5,
             Status = CircleStatus.Active,
             CreatedByUserId = organizer.Id,
             CreatedAt = DateTime.UtcNow.AddDays(-14),
-            StartedAt = DateTime.UtcNow.AddDays(-14)
+            StartDate = DateTime.UtcNow.AddDays(-14)
         };
 
-        // Seed Forming Circle: "Arat Kilo Traders Ekub" (For demonstrating Circle Creation, Member Invite & Start)
+        // Seed Forming / Draft Circle: "Arat Kilo Traders Ekub"
         var formingCircle = new Circle
         {
             Name = "Arat Kilo Traders Ekub",
             ContributionAmount = 2500m,
-            MeetingLabel = "Monthly",
+            Frequency = CircleFrequency.Monthly,
+            MaxMembers = 10,
             Status = CircleStatus.Forming,
             CreatedByUserId = organizer.Id,
             CreatedAt = DateTime.UtcNow.AddDays(-2)
@@ -183,65 +191,110 @@ public static class DbInitializer
         {
             CircleId = activeCircle.Id,
             RoundNumber = 1,
-            ReceiverMemberId = cmOrganizer.Id,
+            WinnerMemberId = cmOrganizer.Id,
             Status = RoundStatus.PaidOut,
             PotAmount = 5000m,
-            PaidOutAt = DateTime.UtcNow.AddDays(-7)
+            DueDate = DateTime.UtcNow.AddDays(-7),
+            DrawnAt = DateTime.UtcNow.AddDays(-7)
         };
 
         var round2 = new Round
         {
             CircleId = activeCircle.Id,
             RoundNumber = 2,
-            ReceiverMemberId = cmHana.Id,
+            WinnerMemberId = cmHana.Id,
             Status = RoundStatus.Open,
             PotAmount = 3000m,
-            PaidOutAt = null
+            DueDate = DateTime.UtcNow.AddDays(7),
+            DrawnAt = null
         };
 
         var round3 = new Round
         {
             CircleId = activeCircle.Id,
             RoundNumber = 3,
-            ReceiverMemberId = cmDawit.Id,
+            WinnerMemberId = cmDawit.Id,
             Status = RoundStatus.Pending,
-            PotAmount = 0m
+            PotAmount = 0m,
+            DueDate = DateTime.UtcNow.AddDays(14)
         };
 
         var round4 = new Round
         {
             CircleId = activeCircle.Id,
             RoundNumber = 4,
-            ReceiverMemberId = cmMeron.Id,
+            WinnerMemberId = cmMeron.Id,
             Status = RoundStatus.Pending,
-            PotAmount = 0m
+            PotAmount = 0m,
+            DueDate = DateTime.UtcNow.AddDays(21)
         };
 
         var round5 = new Round
         {
             CircleId = activeCircle.Id,
             RoundNumber = 5,
-            ReceiverMemberId = cmSelam.Id,
+            WinnerMemberId = cmSelam.Id,
             Status = RoundStatus.Pending,
-            PotAmount = 0m
+            PotAmount = 0m,
+            DueDate = DateTime.UtcNow.AddDays(28)
         };
 
         context.Rounds.AddRange(round1, round2, round3, round4, round5);
         await context.SaveChangesAsync();
 
         // 5. Seed Payments for Round 1 (All 5 paid -> 5000 Birr pot disbursed)
-        var p1_1 = new Payment { RoundId = round1.Id, MemberId = cmOrganizer.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-8), RecordedByUserId = organizer.Id };
-        var p1_2 = new Payment { RoundId = round1.Id, MemberId = cmHana.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-8), RecordedByUserId = organizer.Id };
-        var p1_3 = new Payment { RoundId = round1.Id, MemberId = cmDawit.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-7), RecordedByUserId = organizer.Id };
-        var p1_4 = new Payment { RoundId = round1.Id, MemberId = cmMeron.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-7), RecordedByUserId = organizer.Id };
-        var p1_5 = new Payment { RoundId = round1.Id, MemberId = cmSelam.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-7), RecordedByUserId = organizer.Id };
+        var p1_1 = new Payment { RoundId = round1.Id, CircleMemberId = cmOrganizer.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-8), RecordedByUserId = organizer.Id };
+        var p1_2 = new Payment { RoundId = round1.Id, CircleMemberId = cmHana.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-8), RecordedByUserId = organizer.Id };
+        var p1_3 = new Payment { RoundId = round1.Id, CircleMemberId = cmDawit.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-7), RecordedByUserId = organizer.Id };
+        var p1_4 = new Payment { RoundId = round1.Id, CircleMemberId = cmMeron.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-7), RecordedByUserId = organizer.Id };
+        var p1_5 = new Payment { RoundId = round1.Id, CircleMemberId = cmSelam.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-7), RecordedByUserId = organizer.Id };
 
         // Seed Payments for Round 2 (3 paid: Abebe, Hana, Dawit. Meron and Selam unpaid -> ready for demo!)
-        var p2_1 = new Payment { RoundId = round2.Id, MemberId = cmOrganizer.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-1), RecordedByUserId = organizer.Id };
-        var p2_2 = new Payment { RoundId = round2.Id, MemberId = cmHana.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddDays(-1), RecordedByUserId = organizer.Id };
-        var p2_3 = new Payment { RoundId = round2.Id, MemberId = cmDawit.Id, Amount = 1000m, PaymentType = PaymentType.Contribution, PaidAt = DateTime.UtcNow.AddHours(-3), RecordedByUserId = organizer.Id };
+        var p2_1 = new Payment { RoundId = round2.Id, CircleMemberId = cmOrganizer.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-1), RecordedByUserId = organizer.Id };
+        var p2_2 = new Payment { RoundId = round2.Id, CircleMemberId = cmHana.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddDays(-1), RecordedByUserId = organizer.Id };
+        var p2_3 = new Payment { RoundId = round2.Id, CircleMemberId = cmDawit.Id, Amount = 1000m, PaymentType = PaymentType.Normal, Status = PaymentStatus.Paid, PaidAt = DateTime.UtcNow.AddHours(-3), RecordedByUserId = organizer.Id };
 
         context.Payments.AddRange(p1_1, p1_2, p1_3, p1_4, p1_5, p2_1, p2_2, p2_3);
+
+        // 6. Seed Join Requests (e.g. member3 requests to join forming circle)
+        var joinRequest = new JoinRequest
+        {
+            CircleId = formingCircle.Id,
+            RequestedUserId = member3.Id,
+            RequestedByUserId = member3.Id,
+            Status = JoinRequestStatus.Pending,
+            Message = "Hello! I'd like to join the Arat Kilo Traders Ekub.",
+            CreatedAt = DateTime.UtcNow.AddHours(-5)
+        };
+
+        context.JoinRequests.Add(joinRequest);
+
+        // 7. Seed Notifications (e.g. notification to organizer about join request, and to member2 about payment)
+        var notif1 = new Notification
+        {
+            UserId = organizer.Id,
+            Type = "JoinRequest",
+            Title = "New Join Request",
+            Message = $"{member3.FullName} has requested to join '{formingCircle.Name}'.",
+            RelatedEntityId = joinRequest.Id,
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow.AddHours(-5)
+        };
+
+        var notif2 = new Notification
+        {
+            UserId = member2.Id,
+            Type = "PaymentReceived",
+            Title = "Payment Confirmed",
+            Message = $"Your payment of 1,000 ETB for Round 2 in '{activeCircle.Name}' has been confirmed.",
+            RelatedEntityId = round2.Id,
+            IsRead = true,
+            CreatedAt = DateTime.UtcNow.AddHours(-3),
+            ReadAt = DateTime.UtcNow.AddHours(-2)
+        };
+
+        context.Notifications.AddRange(notif1, notif2);
+
         await context.SaveChangesAsync();
     }
 }

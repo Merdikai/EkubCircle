@@ -66,7 +66,8 @@ public class DrawRoundWinnerCommandHandler : IRequestHandler<DrawRoundWinnerComm
         var winnerIndex = RandomNumberGenerator.GetInt32(eligibleMembers.Count);
         var winner = eligibleMembers[winnerIndex];
 
-        round.ReceiverMemberId = winner.Id;
+        round.WinnerMemberId = winner.Id;
+        round.DrawnAt = DateTime.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
 
         return new DrawWinnerDto

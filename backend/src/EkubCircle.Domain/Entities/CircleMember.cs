@@ -11,6 +11,7 @@ public class CircleMember
     public int MemberOrder { get; set; }
     public string RoleInCircle { get; set; } = CircleRole.Member;
     public bool HasReceived { get; set; } = false;
+    public bool HasWon { get => HasReceived; set => HasReceived = value; }
     public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties

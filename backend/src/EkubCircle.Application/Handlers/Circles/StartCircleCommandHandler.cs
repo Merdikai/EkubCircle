@@ -62,7 +62,7 @@ public class StartCircleCommandHandler : IRequestHandler<StartCircleCommand, Cir
             {
                 CircleId = circle.Id,
                 RoundNumber = roundNumber,
-                ReceiverMemberId = receiverMember.Id,
+                WinnerMemberId = receiverMember.Id,
                 Status = roundNumber == 1 ? RoundStatus.Open : RoundStatus.Pending,
                 PotAmount = 0m
             };
