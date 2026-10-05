@@ -1,5 +1,6 @@
 using System.Text;
 using EkubCircle.API.Data;
+using EkubCircle.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
