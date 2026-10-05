@@ -33,11 +33,12 @@ public class RoundsController : ControllerBase
     /// Get the current active round for a circle, including member payment statuses and pot calculation
     /// </summary>
     [HttpGet("current")]
+    [HttpGet("/api/circles/{circleId:int}/rounds/current")]
     [ProducesResponseType(typeof(CurrentRoundDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCurrentRound([FromQuery] int circleId)
+    public async Task<IActionResult> GetCurrentRound(int circleId)
     {
         if (circleId <= 0)
         {
@@ -69,11 +70,12 @@ public class RoundsController : ControllerBase
     /// Get all rounds and their statuses for a circle
     /// </summary>
     [HttpGet]
+    [HttpGet("/api/circles/{circleId:int}/rounds")]
     [ProducesResponseType(typeof(List<RoundSummaryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCircleRounds([FromQuery] int circleId)
+    public async Task<IActionResult> GetCircleRounds(int circleId)
     {
         if (circleId <= 0)
         {

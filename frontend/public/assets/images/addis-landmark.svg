@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" fill="none">
+  <!-- Classical Intaglio Engraving of Addis Ababa Monuments and Historic Arched Stone Bridge -->
+  <g stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.65">
+    <!-- Sky Hatching Lines -->
+    <line x1="20" y1="20" x2="480" y2="20" stroke-width="0.5" stroke-dasharray="2 6"/>
+    <line x1="30" y1="32" x2="470" y2="32" stroke-width="0.5" stroke-dasharray="2 6"/>
+    
+    <!-- Historic St. George Cathedral Silhouette (Left) -->
+    <path d="M60 130 L60 85 L90 60 L120 85 L120 130 Z" fill="currentColor" fill-opacity="0.08"/>
+    <path d="M85 60 L90 40 L95 60 Z"/>
+    <line x1="90" y1="36" x2="90" y2="42" stroke-width="2"/>
+    <circle cx="90" cy="80" r="10" stroke-width="1"/>
+    <line x1="72" y1="130" x2="72" y2="105"/>
+    <line x1="108" y1="130" x2="108" y2="105"/>
+
+    <!-- Yekatit 12 Monument Obelisk (Center) -->
+    <path d="M242 140 L246 45 L250 35 L254 45 L258 140 Z" fill="currentColor" fill-opacity="0.12"/>
+    <line x1="240" y1="140" x2="260" y2="140" stroke-width="2"/>
+    <line x1="244" y1="90" x2="256" y2="90"/>
+    <line x1="245" y1="65" x2="255" y2="65"/>
+
+    <!-- Historic Arched Stone Bridge of Ras Desta / Entoto (Right) -->
+    <path d="M310 140 C340 90, 420 90, 450 140" stroke-width="2"/>
+    <path d="M300 120 L460 120" stroke-width="2.5"/>
+    <!-- Stone Balustrades -->
+    <line x1="320" y1="105" x2="320" y2="120"/>
+    <line x1="340" y1="102" x2="340" y2="120"/>
+    <line x1="360" y1="100" x2="360" y2="120"/>
+    <line x1="380" y1="100" x2="380" y2="120"/>
+    <line x1="400" y1="100" x2="400" y2="120"/>
+    <line x1="420" y1="102" x2="420" y2="120"/>
+    <line x1="440" y1="105" x2="440" y2="120"/>
+
+    <!-- Ground & Banknote Etch Horizontal Base Lines -->
+    <line x1="10" y1="150" x2="490" y2="150" stroke-width="1.8"/>
+    <line x1="20" y1="156" x2="480" y2="156" stroke-width="1"/>
+    <line x1="30" y1="162" x2="470" y2="162" stroke-width="0.7"/>
+    <line x1="40" y1="168" x2="460" y2="168" stroke-width="0.5"/>
+  </g>
+</svg>

@@ -71,6 +71,44 @@ public class JoinRequestsController : ControllerBase
     }
 
     /// <summary>
+    /// Accept a join request
+    /// </summary>
+    [HttpPost("{id:int}/accept")]
+    [ProducesResponseType(typeof(JoinRequestDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AcceptJoinRequest(int id)
+    {
+        var command = new RespondJoinRequestCommand
+        {
+            RequestId = id,
+            Status = "Accepted",
+            CurrentUserId = GetCurrentUserId()
+        };
+
+        var result = await _sender.Send(command);
+        return Ok(new { success = true, message = "Join request accepted successfully." });
+    }
+
+    /// <summary>
+    /// Reject a join request
+    /// </summary>
+    [HttpPost("{id:int}/reject")]
+    [ProducesResponseType(typeof(JoinRequestDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RejectJoinRequest(int id)
+    {
+        var command = new RespondJoinRequestCommand
+        {
+            RequestId = id,
+            Status = "Rejected",
+            CurrentUserId = GetCurrentUserId()
+        };
+
+        var result = await _sender.Send(command);
+        return Ok(new { success = true, message = "Join request rejected." });
+    }
+
+    /// <summary>
     /// Get all join requests for a circle
     /// </summary>
     [HttpGet("circle/{circleId:int}")]

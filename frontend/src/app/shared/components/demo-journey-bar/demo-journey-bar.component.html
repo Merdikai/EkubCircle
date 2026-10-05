@@ -1,0 +1,38 @@
+<div class="demo-dock" [class.expanded]="isExpanded()">
+  <!-- Collapsed Trigger Pill -->
+  <button class="dock-toggle-btn" (click)="toggleExpand()" aria-label="Toggle Demo Tour">
+    <div class="pulse-indicator"></div>
+    <span class="dock-title">🏆 Hackathon Demo Journey</span>
+    <span class="step-counter">Step {{ currentStepIndex() + 1 }} of {{ demoSteps.length }}</span>
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="dock-chevron">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+
+  <!-- Expanded Tour Panel -->
+  @if (isExpanded()) {
+    <div class="tour-panel">
+      <div class="panel-header">
+        <h4 class="panel-title">10-Step Non-Negotiable Judging Tour</h4>
+        <p class="panel-desc">Click any step to test the rules outlined in the project specification.</p>
+      </div>
+
+      <div class="steps-scroll-list">
+        @for (s of demoSteps; track s.num; let i = $index) {
+          <button
+            class="step-item-btn"
+            [class.active]="i === currentStepIndex()"
+            (click)="jumpToStep(i)"
+          >
+            <div class="step-num-badge">{{ s.num }}</div>
+            <div class="step-item-meta">
+              <span class="step-item-label">{{ s.label }}</span>
+              <span class="step-item-desc">{{ s.desc }}</span>
+            </div>
+            <span class="persona-tag" [class.organizer]="s.persona === 'Organizer'">{{ s.persona }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -4,6 +4,8 @@ public class RecordPaymentRequestDto
 {
     public int RoundId { get; set; }
     public int MemberId { get; set; }
+    public int? CircleMemberId { get; set; }
+    public int EffectiveMemberId => MemberId > 0 ? MemberId : (CircleMemberId ?? 0);
     public decimal Amount { get; set; }
     public string PaymentMethod { get; set; } = "Cash";
     public string? Notes { get; set; }

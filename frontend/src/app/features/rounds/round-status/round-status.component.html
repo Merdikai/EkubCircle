@@ -1,0 +1,229 @@
+<div class="round-status-page">
+  <!-- Top Bar Back Link -->
+  <div class="page-top-bar">
+    <a [routerLink]="['/circles', circleId()]" class="back-link">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      <span>Back to Circle</span>
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading active round and member contributions...</p>
+    </div>
+  } @else if (currentRound() && circle()) {
+    <!-- Round Hero & Summary Header -->
+    <div class="round-hero-card">
+      <div class="round-hero-top">
+        <div class="round-badge-group">
+          <span class="round-num-pill">Round #{{ currentRound()!.roundNumber }} of {{ members().length }}</span>
+          <app-status-badge [status]="currentRound()!.status"></app-status-badge>
+        </div>
+        <span class="circle-title-tag">{{ circle()!.name }}</span>
+      </div>
+
+      <div class="round-metrics-row">
+        <!-- Current Pot (Based strictly on server data) -->
+        <div class="round-metric-box primary-pot-box">
+          <span class="box-label">Current Pot Collected</span>
+          <h2 class="box-value pot-highlight">{{ currentRound()!.potAmount | etbCurrency }}</h2>
+          <span class="box-sub">Target Pot: {{ (circle()!.targetAmount ?? 0) | etbCurrency }}</span>
+        </div>
+
+        <!-- Fixed Server-Defined Receiver (Rule: Receiver must come from server-defined fixed order) -->
+        <div class="round-metric-box receiver-box">
+          <span class="box-label">Scheduled Payout Receiver</span>
+          <div class="receiver-profile-row">
+            <img
+              [src]="currentRound()!.receiverAvatar || 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'"
+              [alt]="currentRound()!.receiverName || 'Receiver'"
+              class="receiver-avatar"
+            />
+            <div class="receiver-meta">
+              <h3 class="receiver-name">{{ currentRound()!.receiverName }}</h3>
+              <span class="receiver-order-badge">Fixed Order Turn</span>
+            </div>
+          </div>
+          <span class="box-sub">Server-Enforced Recipient</span>
+        </div>
+
+        <!-- Payment Progress (Paid / Unpaid counts) -->
+        <div class="round-metric-box progress-box">
+          <span class="box-label">Contribution Progress</span>
+          <h3 class="box-value progress-text">
+            {{ currentRound()!.paidMembersCount }} / {{ currentRound()!.totalMembersCount }} Paid
+          </h3>
+          <div class="progress-bar-track">
+            <div
+              class="progress-bar-fill"
+              [style.width.%]="((currentRound()!.paidMembersCount ?? 0) / (currentRound()!.totalMembersCount || 1)) * 100"
+            ></div>
+          </div>
+          <span class="box-sub">
+            @if ((currentRound()!.paidMembersCount ?? 0) < (currentRound()!.totalMembersCount ?? 1)) {
+              {{ (currentRound()!.totalMembersCount ?? 0) - (currentRound()!.paidMembersCount ?? 0) }} member contributions remaining
+            } @else {
+              ✓ All members have contributed!
+            }
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Buttons Bar -->
+      <div class="round-actions-bar">
+        <button class="btn btn-outline" (click)="openPaymentModal()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+          Record Member Contribution
+        </button>
+
+        <!-- Payout Button: Disabled unless all members paid (Rule: Non-negotiable) -->
+        @if (authService.isOrganizer()) {
+          <button
+            class="btn btn-primary"
+            [disabled]="!currentRound()!.isEligibleForPayout || currentRound()!.status === 'Paid Out'"
+            (click)="openPayoutModal()"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 12 20 22 4 22 4 12"/>
+              <rect x="2" y="7" width="20" height="5"/>
+              <line x1="12" y1="22" x2="12" y2="7"/>
+            </svg>
+            @if (currentRound()!.isEligibleForPayout) {
+              Disburse Pot to {{ currentRound()!.receiverName }}
+            } @else {
+              Payout Locked (Pending All Contributions)
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Members Payment Grid / Table for Current Round -->
+    <div class="members-roster-card">
+      <div class="roster-header">
+        <h3 class="roster-title">Member Payment Status for Round #{{ currentRound()!.roundNumber }}</h3>
+        <span class="fixed-contrib-tag">Fixed Contribution: {{ circle()!.contributionAmount | etbCurrency }}</span>
+      </div>
+
+      <div class="roster-list">
+        @for (m of members(); track m.id) {
+          <div class="roster-item" [class.is-receiver]="m.id === currentRound()!.receiverMemberId">
+            <div class="roster-left">
+              <span class="order-num">#{{ m.memberOrder }}</span>
+              <img
+                [src]="m.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'"
+                [alt]="m.fullName"
+                class="roster-avatar"
+              />
+              <div class="roster-meta">
+                <span class="roster-name">{{ m.fullName }}</span>
+                <span class="roster-email">{{ m.email }}</span>
+              </div>
+            </div>
+
+            <div class="roster-status-col">
+              @if (m.paidThisRound) {
+                <span class="badge badge-completed">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Paid ({{ circle()!.contributionAmount | etbCurrency }})
+                </span>
+              } @else {
+                <span class="badge badge-unpaid">Unpaid</span>
+              }
+            </div>
+
+            <div class="roster-actions">
+              @if (!m.paidThisRound) {
+                <button class="btn btn-sm btn-outline pay-btn" (click)="openPaymentModal(m.id)">
+                  Record Payment
+                </button>
+              } @else {
+                <span class="paid-check-label">✓ Recorded</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>No active round currently open for this circle.</p>
+      <a [routerLink]="['/circles', circleId()]" class="btn btn-primary btn-sm">Return to Circle</a>
+    </div>
+  }
+</div>
+
+<!-- Record Payment Modal (Commit 32) -->
+<div class="modal-backdrop" *ngIf="isPaymentModalOpen()" (click)="closePaymentModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Record Member Contribution</h3>
+      <p class="modal-subtitle">
+        Round #{{ currentRound()?.roundNumber }} • Fixed Amount: {{ circle()?.contributionAmount | etbCurrency }}
+      </p>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="memberSelect" class="form-label">Select Member</label>
+        <select
+          id="memberSelect"
+          [ngModel]="selectedMemberId()"
+          (ngModelChange)="selectedMemberId.set($event)"
+          class="form-control-select"
+        >
+          @for (m of members(); track m.id) {
+            <option [ngValue]="m.id">
+              #{{ m.memberOrder }} - {{ m.fullName }} ({{ m.paidThisRound ? 'Already Paid' : 'Unpaid' }})
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="fixed-amount-box">
+        <span class="fixed-label">Fixed Round Contribution:</span>
+        <span class="fixed-value">{{ circle()?.contributionAmount | etbCurrency }}</span>
+      </div>
+
+      <div class="notice-alert">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>The API strictly rejects duplicate normal payments for the same round.</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" (click)="closePaymentModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="submitPayment()" [disabled]="isSubmittingPayment()">
+        @if (isSubmittingPayment()) {
+          Recording...
+        } @else {
+          Confirm Payment
+        }
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Payout Confirmation Modal (Phase 17) -->
+<app-payout-confirmation-modal
+  [isOpen]="isPayoutModalOpen()"
+  [round]="currentRound()!"
+  [circle]="circle()!"
+  [isLoading]="isSubmittingPayout()"
+  (confirmPayout)="confirmPayout()"
+  (cancel)="closePayoutModal()"
+>
+</app-payout-confirmation-modal>

@@ -1,0 +1,56 @@
+@if (isOpen()) {
+  <div class="modal-backdrop" (click)="onCancel()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Member Payment</h3>
+        <p class="modal-subtitle">
+          {{ circle().name }} • Round #{{ round().roundNumber }}
+        </p>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="memberSelectModal" class="form-label">Select Contributing Member</label>
+          <select
+            id="memberSelectModal"
+            [ngModel]="selectedMemberId()"
+            (ngModelChange)="selectedMemberId.set($event)"
+            class="form-control-select"
+          >
+            <option [ngValue]="null">-- Select a Member --</option>
+            @for (m of members(); track m.id) {
+              <option [ngValue]="m.id">
+                #{{ m.memberOrder }} - {{ m.fullName }} ({{ m.paidThisRound ? 'Paid' : 'Unpaid' }})
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="fixed-info-box">
+          <span class="info-label">Fixed Contribution:</span>
+          <span class="info-amount">{{ circle().contributionAmount | etbCurrency }}</span>
+        </div>
+
+        <div class="rules-note">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>Non-negotiable rule: Duplicate normal payments are permanently rejected by the API.</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" (click)="onCancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="submit()" [disabled]="isSubmitting() || !selectedMemberId()">
+          @if (isSubmitting()) {
+            Recording...
+          } @else {
+            Confirm & Record Payment
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

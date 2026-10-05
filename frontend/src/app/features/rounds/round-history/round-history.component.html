@@ -1,0 +1,116 @@
+<div class="history-page">
+  <!-- Back Button Navigation -->
+  <div class="page-top-bar">
+    <a [routerLink]="['/circles', circleId()]" class="back-link">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      <span>Contribution History</span>
+    </a>
+  </div>
+
+  <div class="history-card-container">
+    <div class="history-header">
+      <div class="history-tabs">
+        <button
+          class="tab-btn"
+          [class.active]="selectedTab() === 'contributions'"
+          (click)="setTab('contributions')"
+        >
+          Member Contributions
+        </button>
+        <button
+          class="tab-btn"
+          [class.active]="selectedTab() === 'payouts'"
+          (click)="setTab('payouts')"
+        >
+          Completed Payout Rounds
+        </button>
+      </div>
+
+      <!-- Month Filter Dropdown (Mockup Component) -->
+      <div class="month-selector-wrap">
+        <span class="calendar-icon">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </span>
+        <select
+          [ngModel]="selectedMonth()"
+          (ngModelChange)="selectedMonth.set($event)"
+          class="month-select"
+        >
+          @for (m of monthsList; track m) {
+            <option [value]="m">{{ m }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB 1: Contributions List (Matching Exact Mockup UI) -->
+    @if (selectedTab() === 'contributions') {
+      <div class="transactions-list">
+        @for (payment of payments(); track payment.id) {
+          <div class="transaction-item">
+            <img
+              [src]="payment.memberAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'"
+              [alt]="payment.memberName || 'Member'"
+              class="tx-avatar"
+            />
+            <div class="tx-info-col">
+              <div class="tx-title-row">
+                <h4 class="tx-name">{{ payment.memberName }}</h4>
+                @if (payment.memberName === 'Amanuel Tesfaye') {
+                  <span class="winner-ongoing-badge" title="Received pot in Round 1 and continues paying">
+                    ★ Round 1 Winner (Ongoing Contributor)
+                  </span>
+                }
+              </div>
+              <span class="tx-amount">{{ payment.amount | etbCurrency }}</span>
+              <span class="tx-date">{{ payment.paidAt | date:'mediumDate' }} • {{ payment.paidAt | date:'shortTime' }}</span>
+            </div>
+            <div class="tx-status-col">
+              <span class="badge badge-completed">Completed</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- TAB 2: Payout Rounds History -->
+    @if (selectedTab() === 'payouts') {
+      <div class="rounds-history-list">
+        @for (r of rounds(); track r.id) {
+          <div class="round-history-item" [class.is-paid-out]="r.status === 'Paid Out'">
+            <div class="round-left-meta">
+              <span class="round-badge">Round #{{ r.roundNumber }}</span>
+              <div class="round-pot-info">
+                <span class="pot-heading">Pot Amount</span>
+                <span class="pot-val font-bold text-burgundy">{{ r.potAmount | etbCurrency }}</span>
+              </div>
+            </div>
+
+            <div class="recipient-col">
+              <span class="rec-label">Payout Recipient:</span>
+              <div class="rec-pill">
+                <img [src]="r.receiverAvatar" [alt]="r.receiverName" class="rec-avatar" />
+                <span class="rec-name">{{ r.receiverName }}</span>
+              </div>
+            </div>
+
+            <div class="round-status-col">
+              <app-status-badge [status]="r.status"></app-status-badge>
+              @if (r.paidOutAt) {
+                <span class="paid-out-time">Disbursed on {{ r.paidOutAt | date:'mediumDate' }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

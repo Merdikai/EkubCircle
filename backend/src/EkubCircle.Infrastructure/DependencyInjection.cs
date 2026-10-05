@@ -11,9 +11,23 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? "Data Source=ekubcircle.db";
+        var connectionString = configuration.GetConnectionString("DefaultConnection") 
+            ?? configuration.GetConnectionString("PostgresConnection") 
+            ?? "Data Source=ekubcircle.db";
+
         services.AddDbContext<EkubDbContext>(options =>
-            options.UseSqlite(connectionString));
+        {
+            if (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) ||
+                connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase) ||
+                connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase))
+            {
+                options.UseNpgsql(connectionString);
+            }
+            else
+            {
+                options.UseSqlite(connectionString);
+            }
+        });
 
         services.AddScoped<IEkubDbContext>(provider => provider.GetRequiredService<EkubDbContext>());
 

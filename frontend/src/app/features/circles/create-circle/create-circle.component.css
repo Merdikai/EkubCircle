@@ -1,0 +1,334 @@
+.create-circle-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+}
+
+.wizard-container {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .wizard-container {
+    grid-template-columns: 1fr;
+  }
+  .wizard-side-banner {
+    display: none;
+  }
+}
+
+.wizard-main {
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-header {
+  margin-bottom: var(--space-6);
+}
+
+.wizard-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  letter-spacing: -0.4px;
+}
+
+.wizard-subtitle {
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* Step Indicators */
+.step-indicators {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+
+.step-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+
+.step-node.active {
+  opacity: 1;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background-color: #e5ded7;
+  color: var(--color-text-main);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-node.active .step-num {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.step-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background-color: #e5ded7;
+  margin: 0 12px;
+}
+
+.step-line.filled {
+  background-color: var(--color-primary);
+}
+
+/* Step Content & Forms */
+.wizard-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.form-control-input,
+.form-control-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-border-subtle);
+  background-color: #faf7f4;
+  font-size: 13.5px;
+  color: var(--color-text-main);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-control-input:focus,
+.form-control-select:focus {
+  background-color: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(121, 30, 42, 0.1);
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.field-error {
+  font-size: 11.5px;
+  color: var(--color-status-danger);
+  font-weight: 600;
+}
+
+/* Step 2 Members */
+.sub-step-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.sub-step-desc {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.add-member-bar {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.members-invite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: var(--space-2);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.member-invite-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background-color: #faf7f4;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.member-order-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-right: 8px;
+}
+
+.member-invite-text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-remove-member {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--color-status-danger);
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+/* Step 3 Review */
+.review-card {
+  background: #faf7f4;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.review-label {
+  color: var(--color-text-muted);
+}
+
+.text-burgundy {
+  color: var(--color-primary);
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.info-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background-color: var(--color-primary-subtle);
+  border: 1px solid var(--color-primary-border);
+  color: var(--color-primary);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.wizard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.btn-next {
+  min-width: 140px;
+}
+
+/* Right Side Branding Banner */
+.wizard-side-banner {
+  background: linear-gradient(180deg, #791e2a 0%, #5c141e 100%);
+  color: #ffffff;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-top-amharic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.amharic-title {
+  font-family: var(--font-amharic);
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  color: #f7d287; /* Imperial gold */
+}
+
+.latin-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2px;
+}
+
+.banner-lion-wrap {
+  width: 170px;
+  margin: var(--space-6) 0;
+  opacity: 0.85;
+}
+
+.banner-lion-img {
+  width: 100%;
+  height: auto;
+  color: #ffffff;
+}
+
+.build-more-text {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}

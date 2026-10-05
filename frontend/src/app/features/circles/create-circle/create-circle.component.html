@@ -1,0 +1,210 @@
+<div class="create-circle-page">
+  <div class="wizard-container">
+    <!-- Left / Center: Main Form Wizard -->
+    <div class="wizard-main">
+      <div class="wizard-header">
+        <h2 class="wizard-title">Create a New Group</h2>
+        <p class="wizard-subtitle">Start a new Ekub and invite your friends or family.</p>
+      </div>
+
+      <!-- Step Indicators (1 Group Details, 2 Members, 3 Review) -->
+      <div class="step-indicators">
+        <div class="step-node" [class.active]="currentStep() >= 1">
+          <span class="step-num">1</span>
+          <span class="step-label">Group Details</span>
+        </div>
+        <div class="step-line" [class.filled]="currentStep() >= 2"></div>
+        <div class="step-node" [class.active]="currentStep() >= 2">
+          <span class="step-num">2</span>
+          <span class="step-label">Members</span>
+        </div>
+        <div class="step-line" [class.filled]="currentStep() >= 3"></div>
+        <div class="step-node" [class.active]="currentStep() >= 3">
+          <span class="step-num">3</span>
+          <span class="step-label">Review</span>
+        </div>
+      </div>
+
+      <form [formGroup]="circleForm" class="wizard-form">
+        <!-- STEP 1: GROUP DETAILS -->
+        @if (currentStep() === 1) {
+          <div class="step-content">
+            <div class="form-group">
+              <label for="name" class="form-label">Group Name</label>
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                placeholder="e.g. Family Ekub"
+                class="form-control-input"
+              />
+              @if (circleForm.get('name')?.invalid && circleForm.get('name')?.touched) {
+                <span class="field-error">Group name is required (minimum 3 characters).</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="targetAmount" class="form-label">Target Amount (ETB)</label>
+              <input
+                id="targetAmount"
+                type="number"
+                formControlName="targetAmount"
+                placeholder="e.g. 12,000"
+                class="form-control-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="contributionAmount" class="form-label">Contribution Amount (ETB)</label>
+              <input
+                id="contributionAmount"
+                type="number"
+                formControlName="contributionAmount"
+                placeholder="e.g. 1,000"
+                class="form-control-input"
+              />
+              <span class="field-hint">Fixed amount each member contributes per round.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="durationMonths" class="form-label">Duration (Months)</label>
+              <select id="durationMonths" formControlName="durationMonths" class="form-control-select">
+                <option [value]="6">6 Months (6 Rounds)</option>
+                <option [value]="12">12 Months (12 Rounds)</option>
+                <option [value]="24">24 Months (24 Rounds)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="meetingLabel" class="form-label">Meeting Label (Descriptive)</label>
+              <input
+                id="meetingLabel"
+                type="text"
+                formControlName="meetingLabel"
+                placeholder="e.g. Every Sunday at 4:00 PM"
+                class="form-control-input"
+              />
+              <span class="field-hint">Descriptive label for members; not an automated scheduler.</span>
+            </div>
+          </div>
+        }
+
+        <!-- STEP 2: MEMBERS INVITATION -->
+        @if (currentStep() === 2) {
+          <div class="step-content">
+            <h4 class="sub-step-title">Invite Initial Members</h4>
+            <p class="sub-step-desc">
+              The organizer is automatically Member #1. Add phone numbers or emails of friends to invite.
+            </p>
+
+            <div class="add-member-bar">
+              <input
+                type="text"
+                [value]="newMemberInput()"
+                (input)="newMemberInput.set($any($event.target).value)"
+                (keyup.enter)="addMember()"
+                placeholder="Enter member email or phone (e.g. liya@ekub.et)"
+                class="form-control-input"
+              />
+              <button type="button" class="btn btn-secondary" (click)="addMember()">Add</button>
+            </div>
+
+            <div class="members-invite-list">
+              @for (m of invitedMembers(); track m; let i = $index) {
+                <div class="member-invite-item">
+                  <span class="member-order-badge">#{{ i + 1 }}</span>
+                  <span class="member-invite-text">{{ m }}</span>
+                  @if (i > 0) {
+                    <button type="button" class="btn-remove-member" (click)="removeMember(i)">&times;</button>
+                  } @else {
+                    <span class="badge badge-active">Organizer</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- STEP 3: REVIEW & CONFIRM -->
+        @if (currentStep() === 3) {
+          <div class="step-content">
+            <h4 class="sub-step-title">Review Ekub Circle Details</h4>
+            
+            <div class="review-card">
+              <div class="review-row">
+                <span class="review-label">Group Name:</span>
+                <span class="review-val font-bold">{{ circleForm.get('name')?.value }}</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Fixed Contribution:</span>
+                <span class="review-val font-bold text-burgundy">ETB {{ circleForm.get('contributionAmount')?.value }} / round</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Target Pot Amount:</span>
+                <span class="review-val font-bold">ETB {{ circleForm.get('targetAmount')?.value }}</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Duration:</span>
+                <span class="review-val">{{ circleForm.get('durationMonths')?.value }} Months</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Meeting Schedule:</span>
+                <span class="review-val">{{ circleForm.get('meetingLabel')?.value }}</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Initial Members:</span>
+                <span class="review-val">{{ invitedMembers().length }} Members</span>
+              </div>
+            </div>
+
+            <div class="info-alert">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <span>Circle will be created in <strong>Forming</strong> status. You can add or approve members before officially locking and starting Round 1.</span>
+            </div>
+          </div>
+        }
+
+        <!-- Wizard Navigation Actions -->
+        <div class="wizard-actions">
+          @if (currentStep() > 1) {
+            <button type="button" class="btn btn-outline" (click)="prevStep()">Back</button>
+          }
+
+          @if (currentStep() < 3) {
+            <button type="button" class="btn btn-primary btn-next" (click)="nextStep()">
+              Next
+            </button>
+          } @else {
+            <button type="button" class="btn btn-primary btn-next" (click)="submitCircle()" [disabled]="isLoading()">
+              @if (isLoading()) {
+                Creating Circle...
+              } @else {
+                Create Circle Now
+              }
+            </button>
+          }
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Side Branding Banner (Matching Mockup Image) -->
+    <div class="wizard-side-banner">
+      <div class="banner-top-amharic">
+        <h2 class="amharic-title">እቁብ</h2>
+        <span class="latin-title">Ekub</span>
+      </div>
+
+      <div class="banner-lion-wrap">
+        <img src="assets/images/ethiopian-lion.svg" alt="Lion of Judah" class="banner-lion-img" />
+      </div>
+
+      <div class="banner-footer-quote">
+        <p class="build-more-text">Together<br/>We Build<br/>More</p>
+      </div>
+    </div>
+  </div>
+</div>

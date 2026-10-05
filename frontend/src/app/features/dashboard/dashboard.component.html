@@ -1,0 +1,176 @@
+<div class="dashboard-page">
+  <!-- Hero Banner with Banknote Engraving Motif -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h2 class="hero-title">
+        {{ getGreeting() }}, {{ authService.currentUser()?.fullName?.split(' ')?.at(0) || 'Amanuel' }}
+      </h2>
+      <p class="hero-subtitle">Together we save, together we grow.</p>
+    </div>
+
+    <!-- Etched Banknote & Lion Background Art -->
+    <div class="hero-artwork">
+      <img src="assets/images/banknote-guilloche.svg" alt="Guilloche waves" class="guilloche-bg" />
+      <img src="assets/images/addis-landmark.svg" alt="Addis Ababa landmarks" class="landmarks-art" />
+      <img src="assets/images/ethiopian-lion.svg" alt="Crowned Lion of Judah" class="lion-art" />
+    </div>
+  </section>
+
+  <!-- Financial Summary Metrics (4 Cards from mockup) -->
+  <section class="metrics-grid">
+    <app-stat-card
+      [label]="'Total Saved'"
+      [value]="totalSaved() | etbCurrency"
+      [subtext]="'Across ' + activeGroupsCount() + ' groups'"
+      [theme]="'burgundy'"
+    >
+      <div icon class="isometric-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+    </app-stat-card>
+
+    <app-stat-card
+      [label]="'Available Balance'"
+      [value]="availableBalance() | etbCurrency"
+      [subtext]="'In your wallet'"
+      [theme]="'blue'"
+    >
+      <div icon class="isometric-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M16 12h.01"/>
+          <path d="M2 10h20"/>
+        </svg>
+      </div>
+    </app-stat-card>
+
+    <app-stat-card
+      [label]="'Total Contributions'"
+      [value]="monthlyContributions() | etbCurrency"
+      [subtext]="'This month'"
+      [theme]="'white'"
+    >
+      <div icon class="isometric-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+      </div>
+    </app-stat-card>
+
+    <app-stat-card
+      [label]="'Active Groups'"
+      [value]="activeGroupsCount().toString()"
+      [subtext]="'Out of ' + totalGroupsCount()"
+      [theme]="'white'"
+    >
+      <div icon class="isometric-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+    </app-stat-card>
+  </section>
+
+  <!-- Middle Section: "Your Groups" & Inspirational Proverb Card -->
+  <section class="groups-section">
+    <div class="groups-main-col">
+      <div class="section-header">
+        <h3 class="section-title">Your Groups</h3>
+        <a routerLink="/circles" class="view-all-link">
+          View all
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Groups Cards Grid -->
+      <div class="groups-cards-grid">
+        @for (circle of activeCircles().slice(0, 3); track circle.id) {
+          <div class="group-card">
+            <!-- Landmark Cover Header -->
+            <div class="card-cover-art" [ngClass]="'accent-' + circle.accentColor">
+              <img src="assets/images/addis-landmark.svg" alt="Addis landmark" class="cover-landmark-img" />
+            </div>
+
+            <!-- Card Content -->
+            <div class="card-body">
+              <div class="group-title-row">
+                <span class="group-icon-wrap" [ngClass]="'icon-' + circle.accentColor">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                  </svg>
+                </span>
+                <div class="group-name-col">
+                  <h4 class="group-name">{{ circle.name }}</h4>
+                  <span class="group-members-count">{{ circle.memberCount }} members</span>
+                </div>
+              </div>
+
+              <!-- Savings Progress -->
+              <div class="progress-section">
+                <div class="progress-labels">
+                  <span class="current-saved">{{ circle.totalSaved | etbCurrency }}</span>
+                  <span class="target-amount">/ {{ circle.targetAmount | etbCurrency }}</span>
+                </div>
+                <div class="progress-track">
+                  <div
+                    class="progress-fill"
+                    [ngClass]="'fill-' + circle.accentColor"
+                    [style.width.%]="((circle.totalSaved ?? 0) / (circle.targetAmount || 1)) * 100"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Next Contribution Info -->
+              <div class="next-contrib-row">
+                <span class="contrib-label">Next contribution</span>
+                <span class="contrib-days">{{ circle.nextContributionDays }} days left</span>
+              </div>
+
+              <!-- Action Button -->
+              <a
+                [routerLink]="['/circles', circle.id]"
+                class="btn btn-block"
+                [ngClass]="circle.accentColor === 'blue' ? 'btn-secondary' : 'btn-primary'"
+              >
+                View Group
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right Column: Motivational Ethiopian Proverb Card -->
+    <div class="quote-card-col">
+      <div class="inspirational-card" (click)="nextProverb()" title="Click to view another Ethiopian proverb">
+        <div class="quote-top">
+          <div class="quote-mark">“</div>
+          <span class="proverb-badge">Wisdom</span>
+        </div>
+        
+        <div class="quote-texts">
+          <p class="quote-text">{{ currentProverb().text }}</p>
+          <p class="quote-amharic">{{ currentProverb().amharic }}</p>
+        </div>
+
+        <!-- Etched Floral Art Motif -->
+        <div class="quote-bottom-row">
+          <span class="quote-author">{{ currentProverb().author }}</span>
+          <div class="quote-flower-wrap">
+            <img src="assets/images/quote-flower.svg" alt="Ethiopian rose blossom" class="quote-flower-img" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

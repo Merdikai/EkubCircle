@@ -1,0 +1,408 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Hero Banner */
+.hero-banner {
+  background: linear-gradient(135deg, #f5ebe6 0%, #faeee7 50%, #f7e6df 100%);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  position: relative;
+  overflow: hidden;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(121, 30, 42, 0.04);
+}
+
+.hero-content {
+  z-index: 2;
+  position: relative;
+  max-width: 500px;
+}
+
+.hero-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.hero-artwork {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 55%;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.guilloche-bg {
+  position: absolute;
+  right: -50px;
+  width: 100%;
+  height: 100%;
+  color: var(--color-primary);
+  opacity: 0.12;
+}
+
+.landmarks-art {
+  position: absolute;
+  right: 120px;
+  height: 130px;
+  color: var(--color-primary);
+  opacity: 0.28;
+}
+
+.lion-art {
+  position: absolute;
+  right: 20px;
+  height: 150px;
+  color: var(--color-primary);
+  opacity: 0.35;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 1100px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Groups Section Layout */
+.groups-section {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: var(--space-6);
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .groups-section {
+    grid-template-columns: 1fr;
+  }
+  .quote-card-col {
+    display: none;
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  letter-spacing: -0.3px;
+}
+
+.view-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  transition: transform 0.15s ease;
+}
+.view-all-link:hover {
+  transform: translateX(2px);
+}
+
+/* Groups Cards Grid */
+.groups-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .groups-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.group-card {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.group-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-cover-art {
+  height: 80px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-cover-art.accent-burgundy {
+  background: linear-gradient(135deg, #f7ece8 0%, #fae9e4 100%);
+}
+.card-cover-art.accent-blue {
+  background: linear-gradient(135deg, #e9f1f7 0%, #e2edf5 100%);
+}
+
+.cover-landmark-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+}
+
+.card-body {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.group-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.group-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.group-icon-wrap.icon-burgundy {
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+.group-icon-wrap.icon-blue {
+  background-color: var(--color-secondary-subtle);
+  color: var(--color-secondary);
+}
+
+.group-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.group-members-count {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+/* Progress bar */
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.progress-labels {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.current-saved {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-text-main);
+}
+
+.target-amount {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.progress-track {
+  height: 6px;
+  background-color: #f0e9e1;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.progress-fill.fill-burgundy {
+  background-color: var(--color-primary);
+}
+.progress-fill.fill-blue {
+  background-color: var(--color-secondary);
+}
+
+.next-contrib-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  padding: 6px 0;
+  border-top: 1px dashed var(--color-border-subtle);
+  margin-top: 4px;
+}
+
+.contrib-label {
+  color: var(--color-text-muted);
+}
+
+.contrib-days {
+  color: var(--color-text-main);
+  font-weight: 700;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* Right Column: Inspirational Proverb Card */
+.inspirational-card {
+  height: 100%;
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inspirational-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-border);
+}
+
+.quote-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.proverb-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.quote-mark {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+  font-family: Georgia, serif;
+}
+
+.quote-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: var(--space-2) 0;
+}
+
+.quote-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+  z-index: 2;
+}
+
+.quote-amharic {
+  font-family: var(--font-amharic);
+  font-size: 13px;
+  color: var(--color-primary);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.quote-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.quote-author {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.quote-flower-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.quote-flower-img {
+  width: 70px;
+  height: auto;
+  color: var(--color-primary);
+  opacity: 0.85;
+}

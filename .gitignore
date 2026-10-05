@@ -1,51 +1,80 @@
-# Build and Output Directories
-bin/
-obj/
-dist/
-out-tsc/
-bazel-out/
+# ==============================================================================
+# EkubCircle — Full-Stack Monorepo .gitignore
+# ==============================================================================
 
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# ------------------------------------------------------------------------------
+# .NET / C# Build and Output
+# ------------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.cdb
+*.rpt
 
-# User-specific files
-*.rsuser
-*.suo
+# Visual Studio / Rider / Omnisharp
+.vs/
+.idea/
 *.user
 *.userosscache
+*.suo
+*.userprefs
 *.sln.docstates
+*.DotSettings.user
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.idea/
-*.swp
-*.bak
-*~
 
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Environment variables
-.env
-.env.*
-!.env.example
-appsettings.Development.json
-appsettings.Production.json
-
-# Logs
-logs/
-*.log
-
-# Angular build artifacts
+# ------------------------------------------------------------------------------
+# Node.js / Angular Frontend
+# ------------------------------------------------------------------------------
+node_modules/
 .angular/
+dist/
+out-tsc/
+bazel-out/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# SQLite databases
+# ------------------------------------------------------------------------------
+# Databases (SQLite local files)
+# ------------------------------------------------------------------------------
 *.db
 *.db-shm
 *.db-wal
+*.sqlite
+*.sqlite3
+
+# ------------------------------------------------------------------------------
+# Environment Variables, Secrets & Passwords
+# (Keep appsettings.json for default schema, protect environment/production configs)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+appsettings.Production.json
+appsettings.Local.json
+
+# ------------------------------------------------------------------------------
+# OS and Temporary Artifacts
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.bak
+*~
+*.tmp

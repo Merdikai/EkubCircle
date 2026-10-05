@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <!-- Banknote Fine Line Engraving of the Imperial Lion of Judah -->
+  <g stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <!-- Royal Crown of Ethiopia -->
+    <path d="M80 32 L86 18 L100 28 L114 18 L120 32 Z" fill="currentColor" fill-opacity="0.15"/>
+    <circle cx="100" cy="14" r="3.5" fill="currentColor"/>
+    <line x1="84" y1="32" x2="116" y2="32" stroke-width="2"/>
+    <circle cx="86" cy="18" r="1.5" fill="currentColor"/>
+    <circle cx="114" cy="18" r="1.5" fill="currentColor"/>
+    
+    <!-- Lion Head & Facial Features -->
+    <path d="M82 42 C72 50 68 64 74 76 C78 84 86 92 100 94 C114 92 122 84 126 76 C132 64 128 50 118 42 Z"/>
+    <!-- Eyes, Nose, Whiskers, Jaw -->
+    <ellipse cx="88" cy="62" rx="3.5" ry="2" fill="currentColor"/>
+    <ellipse cx="112" cy="62" rx="3.5" ry="2" fill="currentColor"/>
+    <path d="M96 72 L100 68 L104 72 L100 76 Z" fill="currentColor"/>
+    <path d="M92 82 C96 86 104 86 108 82"/>
+    <line x1="72" y1="74" x2="60" y2="76"/>
+    <line x1="72" y1="78" x2="58" y2="82"/>
+    <line x1="128" y1="74" x2="140" y2="76"/>
+    <line x1="128" y1="78" x2="142" y2="82"/>
+
+    <!-- Magnificent Curled Mane (Banknote Etched Curves) -->
+    <path d="M68 44 C54 52 46 68 50 86 C54 104 68 118 84 126"/>
+    <path d="M60 60 C46 72 44 94 52 112 C60 128 78 140 96 144"/>
+    <path d="M132 44 C146 52 154 68 150 86 C146 104 132 118 116 126"/>
+    <path d="M140 60 C154 72 156 94 148 112 C140 128 122 140 104 144"/>
+    <path d="M78 118 C88 136 100 146 100 152 C100 146 112 136 122 118"/>
+
+    <!-- Lion Torso and Noble Stance -->
+    <path d="M70 124 C56 138 48 160 52 188 L60 220 L76 220 L74 186 C82 174 94 168 100 168 C106 168 118 174 126 186 L124 220 L140 220 L148 188 C152 160 144 138 130 124"/>
+    <path d="M86 170 L86 216"/>
+    <path d="M114 170 L114 216"/>
+
+    <!-- Staff with Cross and Banner (Crozier) -->
+    <line x1="138" y1="20" x2="168" y2="220" stroke-width="2.5"/>
+    <line x1="128" y1="36" x2="148" y2="34" stroke-width="2"/>
+    <path d="M138 42 L172 46 C164 54 174 62 168 70 L136 64 Z" fill="currentColor" fill-opacity="0.2"/>
+    
+    <!-- Banknote Guilloche Horizontal Etch Hatching -->
+    <line x1="40" y1="228" x2="160" y2="228" stroke-dasharray="2 4" stroke-width="1.5"/>
+    <line x1="30" y1="234" x2="170" y2="234" stroke-width="1"/>
+  </g>
+</svg>

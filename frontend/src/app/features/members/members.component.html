@@ -1,0 +1,174 @@
+<div class="members-page">
+  <!-- Back Button Navigation -->
+  <div class="page-top-bar">
+    <a [routerLink]="['/circles', circleId()]" class="back-link">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      <span>Back to Circle</span>
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading members...</p>
+    </div>
+  } @else if (circle()) {
+    <!-- Circle State Banner -->
+    @if (circle()!.status !== 'Forming') {
+      <div class="locked-banner">
+        <div class="lock-icon-wrap">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <div class="locked-text">
+          <h4 class="locked-title">Member List Locked & Fixed Payout Order Active</h4>
+          <p class="locked-desc">
+            Because this circle is {{ circle()!.status }}, no new members can be added or removed. Payout turns are fixed from Member #1 to Member #{{ members().length }}.
+          </p>
+        </div>
+      </div>
+    } @else {
+      <div class="forming-banner">
+        <div class="info-icon-wrap">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </div>
+        <div class="forming-text">
+          <h4 class="forming-title">Circle in Forming Stage</h4>
+          <p class="forming-desc">
+            Invite members below. Once you click "Start Circle", the member list will be permanently locked and the server will generate the official payout rotation.
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- Add Member Card (Only visible when Forming) -->
+    @if (circle()!.status === 'Forming' && authService.isOrganizer()) {
+      <div class="add-member-card">
+        <h4 class="card-title">Add Member to Ekub</h4>
+        <div class="add-member-form">
+          <input
+            type="text"
+            [ngModel]="newMemberName()"
+            (ngModelChange)="newMemberName.set($event)"
+            placeholder="Full Name (optional)"
+            class="form-control-input"
+          />
+          <input
+            type="text"
+            [ngModel]="newMemberEmail()"
+            (ngModelChange)="newMemberEmail.set($event)"
+            placeholder="Email or Phone Number (required)"
+            class="form-control-input"
+          />
+          <button class="btn btn-primary" (click)="addMember()" [disabled]="isAdding()">
+            Add Member
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Members Table / List -->
+    <div class="members-table-card">
+      <div class="table-header">
+        <h3 class="table-title">Circle Members ({{ members().length }})</h3>
+        <span class="badge" [class.badge-active]="circle()!.status === 'Active'" [class.badge-forming]="circle()!.status === 'Forming'">
+          {{ circle()!.status }}
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="ekub-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Member</th>
+              <th>Role</th>
+              <th>Payout Status</th>
+              <th>Joined Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (m of members(); track m.id) {
+              <tr>
+                <td class="order-cell">
+                  <span class="order-badge">#{{ m.memberOrder }}</span>
+                </td>
+                <td class="member-cell">
+                  <div class="member-info-row">
+                    <img
+                      [src]="m.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'"
+                      [alt]="m.fullName"
+                      class="table-avatar"
+                    />
+                    <div class="member-names">
+                      <span class="table-fullname">{{ m.fullName }}</span>
+                      <span class="table-email">{{ m.email }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  @if (m.roleInCircle === 'Organizer') {
+                    <span class="badge badge-active">Organizer</span>
+                  } @else {
+                    <span class="badge badge-open">Member</span>
+                  }
+                </td>
+                <td>
+                  @if (m.hasReceived) {
+                    <span class="badge badge-completed">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      Received Pot
+                    </span>
+                  } @else {
+                    <span class="badge badge-forming">Waiting Turn</span>
+                  }
+                </td>
+                <td class="date-cell">{{ m.joinedAt | date:'mediumDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pending Join Requests (if any) -->
+    @if (joinRequests().length > 0) {
+      <div class="join-requests-card">
+        <h4 class="requests-title">Pending Join Requests ({{ joinRequests().length }})</h4>
+        <div class="requests-list">
+          @for (req of joinRequests(); track req.id) {
+            <div class="request-item">
+              <div class="request-user">
+                <img [src]="req.user?.avatarUrl" [alt]="req.user?.fullName" class="table-avatar" />
+                <div class="req-names">
+                  <span class="req-name">{{ req.user?.fullName }}</span>
+                  <span class="req-email">{{ req.user?.email }}</span>
+                </div>
+              </div>
+
+              @if (circle()!.status === 'Forming' && authService.isOrganizer()) {
+                <div class="request-actions">
+                  <button class="btn btn-sm btn-primary" (click)="acceptJoinRequest(req)">Accept</button>
+                  <button class="btn btn-sm btn-outline" (click)="rejectJoinRequest(req)">Decline</button>
+                </div>
+              } @else {
+                <span class="badge badge-forming">Locked (Circle Started)</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

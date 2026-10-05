@@ -34,13 +34,17 @@ public class PaymentsController : ControllerBase
     /// Prevents duplicate contributions for the same round.
     /// </summary>
     [HttpPost]
+    [HttpPost("/api/rounds/{roundId:int}/payments")]
     [ProducesResponseType(typeof(PaymentDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RecordPayment([FromBody] RecordPaymentRequestDto request)
+    public async Task<IActionResult> RecordPayment([FromBody] RecordPaymentRequestDto request, int? roundId = null)
     {
-        if (request.RoundId <= 0 || request.MemberId <= 0 || request.Amount <= 0)
+        var effectiveRoundId = roundId.HasValue && roundId.Value > 0 ? roundId.Value : request.RoundId;
+        var effectiveMemberId = request.EffectiveMemberId;
+
+        if (effectiveRoundId <= 0 || effectiveMemberId <= 0 || request.Amount <= 0)
         {
             return BadRequest(new { message = "RoundId, MemberId, and a positive Amount are required." });
         }
@@ -50,8 +54,8 @@ public class PaymentsController : ControllerBase
             var userId = GetCurrentUserId();
             var command = new RecordPaymentCommand(
                 userId,
-                request.RoundId,
-                request.MemberId,
+                effectiveRoundId,
+                effectiveMemberId,
                 request.Amount,
                 request.PaymentMethod,
                 request.Notes
@@ -81,6 +85,8 @@ public class PaymentsController : ControllerBase
     /// Get payment audit history filtered by circleId or roundId
     /// </summary>
     [HttpGet]
+    [HttpGet("/api/circles/{circleId:int}/history")]
+    [HttpGet("/api/history")]
     [ProducesResponseType(typeof(List<PaymentDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPayments([FromQuery] int? circleId, [FromQuery] int? roundId)
     {

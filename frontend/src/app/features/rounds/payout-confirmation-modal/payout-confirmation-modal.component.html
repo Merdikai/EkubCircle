@@ -1,0 +1,75 @@
+@if (isOpen()) {
+  <div class="modal-backdrop" (click)="onCancel()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-icon-wrap">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 12 20 22 4 22 4 12"/>
+            <rect x="2" y="7" width="20" height="5"/>
+            <line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h3 class="modal-title">Disburse Ekub Pot</h3>
+          <p class="modal-subtitle">Official payout execution for Round #{{ round().roundNumber }}</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Recipient Highlight Box -->
+        <div class="receiver-card">
+          <img
+            [src]="round().receiverAvatar || 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'"
+            [alt]="round().receiverName || 'Receiver'"
+            class="receiver-avatar"
+          />
+          <div class="receiver-details">
+            <span class="receiver-sub">Server-Enforced Recipient</span>
+            <h4 class="receiver-name">{{ round().receiverName }}</h4>
+            <span class="verified-tag">✓ Payout Turn Verified</span>
+          </div>
+        </div>
+
+        <!-- Pot Breakdown -->
+        <div class="pot-summary-table">
+          <div class="summary-line">
+            <span>Accumulated Pot:</span>
+            <strong class="pot-amount text-burgundy">{{ round().potAmount | etbCurrency }}</strong>
+          </div>
+          <div class="summary-line">
+            <span>Contributing Members:</span>
+            <strong>{{ round().paidMembersCount }} of {{ round().totalMembersCount }} Paid</strong>
+          </div>
+          <div class="summary-line">
+            <span>Next Round Status:</span>
+            <span>Will automatically advance to Round #{{ round().roundNumber + 1 }}</span>
+          </div>
+        </div>
+
+        <div class="warning-alert">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div>
+            <strong>Irreversible Action:</strong> Once confirmed, this round will be marked <em>Paid Out</em> and cannot be disbursed again.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" (click)="onCancel()" [disabled]="isLoading()">Cancel</button>
+        <button class="btn btn-primary" (click)="onConfirm()" [disabled]="isLoading()">
+          @if (isLoading()) {
+            Disbursing Payout...
+          } @else {
+            Disburse {{ round().potAmount | etbCurrency }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

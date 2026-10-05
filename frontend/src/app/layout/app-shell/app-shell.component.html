@@ -1,0 +1,24 @@
+<div class="ekub-layout-root">
+  <!-- Global Toast Notifications -->
+  <app-toast-container></app-toast-container>
+
+  <!-- Desktop Sidebar -->
+  <app-sidebar class="desktop-only-sidebar"></app-sidebar>
+
+  <!-- Main View Container -->
+  <div class="ekub-main-viewport">
+    <!-- Topbar Header -->
+    <app-topbar></app-topbar>
+
+    <!-- Scrollable Main Content -->
+    <main class="ekub-content-area">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <app-mobile-navigation></app-mobile-navigation>
+
+    <!-- Hackathon Interactive Demo Tour Bar -->
+    <app-demo-journey-bar></app-demo-journey-bar>
+  </div>
+</div>

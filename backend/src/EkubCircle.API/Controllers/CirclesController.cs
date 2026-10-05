@@ -95,6 +95,32 @@ public class CirclesController : ControllerBase
     }
 
     /// <summary>
+    /// Get all members of a circle
+    /// </summary>
+    [HttpGet("{id:int}/members")]
+    [ProducesResponseType(typeof(List<CircleMemberDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCircleMembers(int id)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var query = new GetCircleByIdQuery(id, userId);
+            var circle = await _sender.Send(query);
+            return Ok(circle.Members);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// Add a member to a forming circle by registered email (Organizer only)
     /// </summary>
     [HttpPost("{id:int}/members")]

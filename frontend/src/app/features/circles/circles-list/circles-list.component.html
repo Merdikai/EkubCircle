@@ -1,0 +1,87 @@
+<div class="circles-list-page">
+  <!-- Header with Title and Create Action -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h2 class="page-title">My Ekub Circles</h2>
+      <p class="page-subtitle">Track your rotating savings groups, contributions, and payout turns.</p>
+    </div>
+    <a routerLink="/circles/create" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      Create New Circle
+    </a>
+  </div>
+
+  <!-- Filter Pills Bar -->
+  <div class="filters-bar">
+    <button class="filter-pill" [class.active]="activeFilter() === 'All'" (click)="setFilter('All')">
+      All ({{ circles().length }})
+    </button>
+    <button class="filter-pill" [class.active]="activeFilter() === 'Active'" (click)="setFilter('Active')">
+      Active
+    </button>
+    <button class="filter-pill" [class.active]="activeFilter() === 'Forming'" (click)="setFilter('Forming')">
+      Forming
+    </button>
+    <button class="filter-pill" [class.active]="activeFilter() === 'Completed'" (click)="setFilter('Completed')">
+      Completed
+    </button>
+  </div>
+
+  <!-- Circles Grid -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading circles...</p>
+    </div>
+  } @else if (filteredCircles().length === 0) {
+    <div class="empty-state">
+      <img src="assets/images/ekub-rosette.svg" alt="Ekub" class="empty-rosette" />
+      <h4>No Circles Found</h4>
+      <p>There are no circles currently matching this filter.</p>
+      <a routerLink="/circles/create" class="btn btn-primary btn-sm">Create One Now</a>
+    </div>
+  } @else {
+    <div class="circles-grid">
+      @for (c of filteredCircles(); track c.id) {
+        <div class="circle-card">
+          <div class="card-cover-art" [ngClass]="'accent-' + (c.accentColor || 'burgundy')">
+            <img src="assets/images/addis-landmark.svg" alt="Addis landmark" class="cover-landmark-img" />
+            <app-status-badge [status]="c.status" class="cover-badge"></app-status-badge>
+          </div>
+
+          <div class="card-body">
+            <div class="circle-info-row">
+              <h3 class="circle-name">{{ c.name }}</h3>
+              <span class="meeting-label">{{ c.meetingLabel }}</span>
+            </div>
+
+            <div class="circle-stats-row">
+              <div class="stat-col">
+                <span class="stat-meta">Contribution</span>
+                <span class="stat-val font-bold text-burgundy">{{ c.contributionAmount | etbCurrency }}</span>
+              </div>
+              <div class="stat-col">
+                <span class="stat-meta">Members</span>
+                <span class="stat-val">{{ c.memberCount ?? 1 }} members</span>
+              </div>
+              <div class="stat-col">
+                <span class="stat-meta">Target Pot</span>
+                <span class="stat-val font-bold">{{ c.targetAmount | etbCurrency }}</span>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <a [routerLink]="['/circles', c.id]" class="btn btn-outline btn-block">
+                View Details & Rounds
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
