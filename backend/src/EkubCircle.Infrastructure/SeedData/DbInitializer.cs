@@ -9,7 +9,7 @@ public static class DbInitializer
 {
     public static async Task SeedAsync(EkubDbContext context)
     {
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         if (await context.Users.AnyAsync())
         {
