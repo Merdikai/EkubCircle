@@ -1,6 +1,9 @@
 using System.Security.Claims;
+using AutoMapper;
+using EkubCircle.API.Application.Commands.Circles;
+using EkubCircle.API.Application.Queries.Circles;
 using EkubCircle.API.DTOs.Circles;
-using EkubCircle.API.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +14,13 @@ namespace EkubCircle.API.Controllers;
 [Route("api/[controller]")]
 public class CirclesController : ControllerBase
 {
-    private readonly ICircleService _circleService;
+    private readonly ISender _sender;
+    private readonly IMapper _mapper;
 
-    public CirclesController(ICircleService circleService)
+    public CirclesController(ISender sender, IMapper mapper)
     {
-        _circleService = circleService;
+        _sender = sender;
+        _mapper = mapper;
     }
 
     private int GetCurrentUserId()
@@ -40,7 +45,8 @@ public class CirclesController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
-            var circle = await _circleService.CreateCircleAsync(userId, request);
+            var command = new CreateCircleCommand(userId, request.Name, request.ContributionAmount, request.MeetingLabel);
+            var circle = await _sender.Send(command);
             return CreatedAtAction(nameof(GetCircleById), new { id = circle.Id }, circle);
         }
         catch (ArgumentException ex)
@@ -57,7 +63,8 @@ public class CirclesController : ControllerBase
     public async Task<IActionResult> GetMyCircles([FromQuery] string? status)
     {
         var userId = GetCurrentUserId();
-        var circles = await _circleService.GetUserCirclesAsync(userId, status);
+        var query = new GetUserCirclesQuery(userId, status);
+        var circles = await _sender.Send(query);
         return Ok(circles);
     }
 
@@ -73,7 +80,8 @@ public class CirclesController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
-            var circle = await _circleService.GetCircleDetailsAsync(id, userId);
+            var query = new GetCircleByIdQuery(id, userId);
+            var circle = await _sender.Send(query);
             return Ok(circle);
         }
         catch (KeyNotFoundException ex)
@@ -104,7 +112,8 @@ public class CirclesController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
-            var member = await _circleService.AddMemberAsync(id, userId, request);
+            var command = new AddMemberCommand(id, userId, request.Email);
+            var member = await _sender.Send(command);
             return StatusCode(StatusCodes.Status201Created, member);
         }
         catch (KeyNotFoundException ex)
@@ -134,7 +143,8 @@ public class CirclesController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
-            await _circleService.RemoveMemberAsync(id, userId, memberId);
+            var command = new RemoveMemberCommand(id, userId, memberId);
+            await _sender.Send(command);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
@@ -164,7 +174,8 @@ public class CirclesController : ControllerBase
         try
         {
             var userId = GetCurrentUserId();
-            var circle = await _circleService.StartCircleAsync(id, userId);
+            var command = new StartCircleCommand(id, userId);
+            var circle = await _sender.Send(command);
             return Ok(circle);
         }
         catch (KeyNotFoundException ex)

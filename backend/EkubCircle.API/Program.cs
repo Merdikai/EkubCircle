@@ -1,6 +1,9 @@
 using System.Text;
+using AutoMapper;
+using EkubCircle.API.Application.Common.Mappings;
 using EkubCircle.API.Data;
 using EkubCircle.API.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -53,8 +56,12 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICircleService, CircleService>();
+var mapperConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+}, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
+builder.Services.AddSingleton<IMapper>(new Mapper(mapperConfig));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -66,7 +73,16 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "EkubCircle Web API",
         Version = "v1",
-        Description = "RESTful API and Server-Side Rule Engine for Rotating Ekub Savings Ledger"
+        Description = "RESTful API and Server-Side Rule Engine for Rotating Ekub Savings Ledger (Challenge 3)"
+    });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
     });
 });
 

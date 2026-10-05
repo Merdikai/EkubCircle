@@ -2,6 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace EkubCircle.API.Models;
 
+public static class UserRole
+{
+    public const string Admin = "Admin";
+    public const string User = "User";
+}
+
 public class User
 {
     public int Id { get; set; }

@@ -44,3 +44,8 @@ logs/
 
 # Angular build artifacts
 .angular/
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
